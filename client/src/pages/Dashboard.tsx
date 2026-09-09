@@ -47,7 +47,7 @@ export default function Dashboard() {
         const fetchRecommendations = async () => {
             try {
                 const response = await api.get("/restaurant/recommend", {
-                    params: { preference: "romantic premium dining", partySize: 2, limit: 3 },
+                    params: { limit: 3 },
                 });
                 const items = response.data?.recommendations;
                 setRecSource(response.data?.source || "");

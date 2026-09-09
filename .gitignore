@@ -22,3 +22,6 @@ Thumbs.db
 
 # QA screenshots
 qa/
+
+# QA artifacts
+qa_*
