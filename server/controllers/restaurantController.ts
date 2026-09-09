@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+﻿import { Request, Response } from "express";
 import { Restaurant } from "../models/Restaurant.js";
 import { Table } from "../models/Table.js";
 import { Booking } from "../models/Booking.js";
@@ -191,7 +191,7 @@ interface CandidateRestaurant {
   description: string;
 }
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
 
 async function askGemini(prompt: string): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
