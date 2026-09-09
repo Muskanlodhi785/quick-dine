@@ -1,8 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
-import Navbar from "../components/Navbar.tsx";
-import Footer from "../components/Footer.tsx";
 import { ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
 import Loader from "../components/Loader.tsx";
@@ -86,7 +84,7 @@ export default function BookingConfirmation() {
     if (confirmedBooking) {
         return (
             <div className="min-h-screen bg-surface flex flex-col pt-20">
-                <Navbar />
+
                 <main className="grow max-w-7xl w-full mx-auto px-6 md:px-10 py-16 flex items-start justify-center">
                     <BookingSuccess
                         confirmedBooking={confirmedBooking}
@@ -97,14 +95,13 @@ export default function BookingConfirmation() {
                         tableLabel={tableLabel}
                     />
                 </main>
-                <Footer />
+
             </div>
         );
     }
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-20">
-            <Navbar />
 
             <main className="grow max-w-5xl w-full mx-auto px-6 md:px-10 py-12">
                 {/* Breadcrumb */}
@@ -136,7 +133,6 @@ export default function BookingConfirmation() {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 }

@@ -117,4 +117,7 @@ const restaurantSchema = new Schema <IRestaurant>(
 )
 
 
+restaurantSchema.index({ owner: 1 });
+restaurantSchema.index({ status: 1, createdAt: -1 });
+
 export const Restaurant = model<IRestaurant>('Restaurant', restaurantSchema)

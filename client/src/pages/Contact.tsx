@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar.tsx";
-import Footer from "../components/Footer.tsx";
+﻿import { Link } from "react-router-dom";
 import { MapPin, Phone, Clock, Mail, ArrowRight } from "lucide-react";
 
 const DETAILS = [
@@ -13,7 +11,6 @@ const DETAILS = [
 export default function Contact() {
     return (
         <div className="min-h-screen bg-surface flex flex-col">
-            <Navbar />
 
             <main className="grow">
                 <div className="ajrak-strip"></div>
@@ -83,7 +80,6 @@ export default function Contact() {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 }

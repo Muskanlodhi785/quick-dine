@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar.tsx";
-import Footer from "../components/Footer.tsx";
+﻿import { Link } from "react-router-dom";
 import { Flame, Mountain, Users, ArrowRight } from "lucide-react";
 
 const PILLARS = [
@@ -12,7 +10,6 @@ const PILLARS = [
 export default function About() {
     return (
         <div className="min-h-screen bg-surface flex flex-col">
-            <Navbar />
 
             <main className="grow">
                 <div className="ajrak-strip"></div>
@@ -70,7 +67,6 @@ export default function About() {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 }

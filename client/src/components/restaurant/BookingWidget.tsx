@@ -172,7 +172,7 @@ export default function BookingWidget({
                 </button>
 
                 <p className="text-center text-[10px] text-ink/65 mt-3 leading-relaxed">
-                    Your request is sent to the restaurant and confirmed within moments.
+                    Your request goes straight to the restaurant - each booking shows as pending until the house confirms your table (usually within minutes).
                 </p>
             </div>
         </div>

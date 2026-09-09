@@ -2,8 +2,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext.tsx";
-import Navbar from "../components/Navbar.tsx";
-import Footer from "../components/Footer.tsx";
 import toast from "react-hot-toast";
 import Loader from "../components/Loader.tsx";
 import RestaurantHero from "../components/restaurant/RestaurantHero.tsx";
@@ -109,7 +107,7 @@ export default function RestaurantDetail() {
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-20">
-            <Navbar />
+
             <RestaurantHero restaurant={restaurant} />
 
             <main className="grow max-w-7xl w-full mx-auto px-6 md:px-10 py-12">
@@ -139,7 +137,6 @@ export default function RestaurantDetail() {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 }

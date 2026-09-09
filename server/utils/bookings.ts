@@ -30,6 +30,10 @@ export const addMinutes = (time: string, minutes: number): string => {
   return `${pad2(hh)}:${pad2(mm)}`;
 };
 
+/** True when a booking window would cross midnight (string order inverts). Such slots are not bookable. */
+export const crossesMidnight = (startTime: string, minutes = MEAL_DURATION_MIN): boolean =>
+  addMinutes(startTime, minutes) <= startTime;
+
 /** Half-open interval overlap: [aStart, aEnd) vs [bStart, bEnd). "HH:mm" strings compare correctly when zero-padded. */
 export const rangesOverlap = (
   aStart: string,

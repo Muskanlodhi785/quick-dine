@@ -1,8 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import Navbar from "../components/Navbar.tsx";
-import Footer from "../components/Footer.tsx";
 import RestaurantCard from "../components/RestaurantCard.tsx";
 import { SlidersHorizontal, Search as SearchIcon, X, Check, MapPin, SearchXIcon } from "lucide-react";
 import toast from "react-hot-toast";
@@ -116,7 +114,7 @@ export default function Search() {
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-20">
-            <Navbar />
+
             {/* Sub-header / Search inputs */}
             <div className="bg-raised border-b border-outline-variant/10 py-4 z-10 sticky top-16 shadow-sm">
                 <div className="max-w-7xl mx-auto px-6 md:px-10 flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -362,7 +360,6 @@ export default function Search() {
                 </div>
             )}
 
-            <Footer />
         </div>
     );
 }

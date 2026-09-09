@@ -75,6 +75,9 @@ const bookingSchema = new Schema<IBooking>(
 
 // Speeds up conflict queries: active bookings for a table on a day.
 bookingSchema.index({ table: 1, date: 1, status: 1, startTime: 1 });
+// Venue calendar view (owner/admin) and customer dashboard lookups.
+bookingSchema.index({ restaurant: 1, date: 1, status: 1, startTime: 1 });
+bookingSchema.index({ user: 1, date: -1, startTime: -1 });
 
 bookingSchema.pre("save", function () {
   if (!this.bookingId) {

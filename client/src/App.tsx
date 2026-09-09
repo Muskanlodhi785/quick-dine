@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound.tsx";
 import OwnerDashboard from "./pages/owner/OwnerDashboard.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
-import AuthModal from "./components/AuthModal.tsx";
+import Layout from "./components/Layout.tsx";
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
@@ -32,47 +32,48 @@ export default function App() {
                     },
                 }}
             />
-            <AuthModal />
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/menu" element={<Menu />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/restaurant/:slug" element={<RestaurantDetail />} />
-                <Route
-                    path="/booking/:slug"
-                    element={
-                        <ProtectedRoute>
-                            <BookingConfirmation />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            <Dashboard />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/owner/dashboard"
-                    element={
-                        <ProtectedRoute allowedRoles={["owner"]}>
-                            <OwnerDashboard />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/admin/dashboard"
-                    element={
-                        <ProtectedRoute allowedRoles={["admin"]}>
-                            <AdminDashboard />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route path="*" element={<NotFound />} />
+                <Route element={<Layout />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/menu" element={<Menu />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/restaurant/:slug" element={<RestaurantDetail />} />
+                    <Route
+                        path="/booking/:slug"
+                        element={
+                            <ProtectedRoute>
+                                <BookingConfirmation />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/owner/dashboard"
+                        element={
+                            <ProtectedRoute allowedRoles={["owner"]}>
+                                <OwnerDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/dashboard"
+                        element={
+                            <ProtectedRoute allowedRoles={["admin"]}>
+                                <AdminDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="*" element={<NotFound />} />
+                </Route>
             </Routes>
         </>
     );

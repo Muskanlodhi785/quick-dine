@@ -1,8 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useCallback } from "react";
 import { useAppContext } from "../../context/AppContext.tsx";
-import Navbar from "../../components/Navbar.tsx";
-import Footer from "../../components/Footer.tsx";
 import Loader from "../../components/Loader.tsx";
 import { CalendarIcon, SettingsIcon, Armchair } from "lucide-react";
 import RestaurantWizard from "../../components/owner/RestaurantWizard.tsx";
@@ -64,13 +62,20 @@ export default function OwnerDashboard() {
         };
     }, [fetchOwnerData]);
 
+    // Poll for new bookings/tables while the tab is visible (live demo feel).
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (document.visibilityState === "visible") void fetchOwnerData();
+        }, 30000);
+        return () => clearInterval(interval);
+    }, [fetchOwnerData]);
+
     if (loading) {
         return <Loader text="Loading Owner Dashboard..." />;
     }
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-20">
-            <Navbar />
 
             <main className="grow max-w-7xl w-full mx-auto px-6 md:px-10 py-12">
                 {/* Heading */}
@@ -164,7 +169,6 @@ export default function OwnerDashboard() {
                 )}
             </main>
 
-            <Footer />
         </div>
     );
 }

@@ -2,8 +2,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext.tsx";
-import Navbar from "../components/Navbar.tsx";
-import Footer from "../components/Footer.tsx";
 import RestaurantCard from "../components/RestaurantCard.tsx";
 import { CalendarDaysIcon, UsersIcon, MapPinIcon, Armchair } from "lucide-react";
 import toast from "react-hot-toast";
@@ -83,7 +81,7 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-20">
-            <Navbar />
+
             <main className="grow max-w-7xl w-full mx-auto px-6 md:px-10 py-12">
                 <div className="grow space-y-10">
                     {/* Welcoming header */}
@@ -253,7 +251,6 @@ export default function Dashboard() {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 }

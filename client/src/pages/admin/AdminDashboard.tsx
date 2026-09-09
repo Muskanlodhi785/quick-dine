@@ -1,7 +1,5 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import Navbar from "../../components/Navbar.tsx";
-import Footer from "../../components/Footer.tsx";
 import Loader from "../../components/Loader.tsx";
 import { useAppContext } from "../../context/AppContext.tsx";
 import { ShieldCheckIcon, CheckCircleIcon, BarChart3Icon } from "lucide-react";
@@ -72,7 +70,6 @@ export default function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-20">
-            <Navbar />
 
             <main className="grow max-w-7xl w-full mx-auto px-6 md:px-10 py-12">
                 {/* Heading */}
@@ -136,7 +133,6 @@ export default function AdminDashboard() {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 }

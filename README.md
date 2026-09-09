@@ -104,3 +104,13 @@ Seeded data: 6 approved Hyderabad (Sindh) restaurants - Brohi Restaurant flagshi
 2. Log out, log in as the **customer**, open a restaurant, pick a date/party size, choose a slot with a free table, and book it.
 3. Log back in as the owner → **Approve** the pending booking.
 4. Double-booking check: fire two identical booking requests for the same table/slot in parallel — exactly one succeeds (201), the other receives a 409 conflict message.
+
+## ✅ Automated tests
+
+The API suite (11 tests) covers the core guarantees and runs against a dedicated test database (quickdine_test) - your demo data is never touched:
+
+```bash
+cd server
+npm test
+```  
+Optional: point at another Mongo with TEST_MONGODB_URI (default mongodb://127.0.0.1:27017/quickdine_test). Tests: role clamp, logins, availability (approved-only), booking create/duplicate 409, parallel double-booking -> exactly one 201 + one 409, owner approve/reject/completed transitions, cancel frees slot, role/ownership guards.

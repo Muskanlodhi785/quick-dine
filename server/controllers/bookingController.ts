@@ -7,6 +7,7 @@ import { Booking } from "../models/Booking.js";
 import {
   acquireTableLock,
   addMinutes,
+  crossesMidnight,
   findConflictingBooking,
   isValidDateISO,
   isValidTime,
@@ -62,6 +63,12 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
     }
     if (!restaurant.availableSlots.includes(startTime)) {
       res.status(400).json({ message: `Time slot ${startTime} is not offered by this restaurant` });
+      return;
+    }
+    if (crossesMidnight(startTime)) {
+      res.status(400).json({
+        message: `${startTime} is the restaurant's last seating - this window runs past midnight and cannot be booked. Please pick an earlier slot.`,
+      });
       return;
     }
 

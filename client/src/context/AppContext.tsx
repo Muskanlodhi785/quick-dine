@@ -97,8 +97,12 @@ export const AppContextProvider = ({ children }: Props) => {
                     const res = await api.get("/auth/me");
                    setUser(res.data)
                 }catch(error: any){
-                    toast.error(error?.response?.data?.message || "Login failed");
-                    logout();
+                    // Only a real 401 (invalid/expired token) should log the user out.
+                    // Network blips or 5xx keep the stored token so the next visit retries.
+                    if (error?.response?.status === 401) {
+                        localStorage.removeItem("token");
+                        setToken(null);
+                    }
                 }
             }
             setLoading(false);

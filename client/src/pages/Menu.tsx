@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar.tsx";
-import Footer from "../components/Footer.tsx";
+﻿import { Link } from "react-router-dom";
 import { Flame, ArrowRight } from "lucide-react";
 
 interface MenuItem {
@@ -51,7 +49,6 @@ const SECTIONS: MenuSection[] = [
 export default function Menu() {
     return (
         <div className="min-h-screen bg-surface flex flex-col">
-            <Navbar />
 
             <main className="grow">
                 <div className="ajrak-strip"></div>
@@ -118,7 +115,6 @@ export default function Menu() {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 }

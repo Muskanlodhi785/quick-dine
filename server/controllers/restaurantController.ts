@@ -6,6 +6,7 @@ import { User } from "../models/User.js";
 import jwt from "jsonwebtoken";
 import {
   addMinutes,
+  crossesMidnight,
   isValidDateISO,
   MEAL_DURATION_MIN,
   rangesOverlap,
@@ -77,7 +78,7 @@ export const getRestaurantBySlug = async (req: Request, res: Response): Promise<
   try {
     const restaurant = await Restaurant.findOne({ slug: req.params.slug });
     if (!restaurant) {
-      res.status(404).json({ error: "Restaurant not found" });
+      res.status(404).json({ message: "Restaurant not found" });
       return;
     }
 
@@ -107,7 +108,7 @@ export const getRestaurantBySlug = async (req: Request, res: Response): Promise<
     }
 
     if (!authorized) {
-      res.status(404).json({ error: "Restaurant not found" });
+      res.status(404).json({ message: "Restaurant not found" });
       return;
     }
     res.json(restaurant);
@@ -123,13 +124,13 @@ export const getRestaurantAvailability = async (req: Request, res: Response): Pr
   try {
     const { date } = req.query;
     if (!date || !isValidDateISO(date)) {
-      res.status(400).json({ error: "Please provide a valid date (YYYY-MM-DD)" });
+      res.status(400).json({ message: "Please provide a valid date (YYYY-MM-DD)" });
       return;
     }
 
     const restaurant = await Restaurant.findById(req.params.id);
-    if (!restaurant) {
-      res.status(404).json({ error: "Restaurant not found" });
+    if (!restaurant || restaurant.status !== "approved") {
+      res.status(404).json({ message: "Restaurant not found" });
       return;
     }
 
@@ -144,7 +145,10 @@ export const getRestaurantAvailability = async (req: Request, res: Response): Pr
       }),
     ]);
 
-    const availability = (restaurant.availableSlots ?? []).map((slot) => {
+    // Slots whose 90-minute window would cross midnight cannot be booked safely.
+    const bookableSlots = (restaurant.availableSlots ?? []).filter((slot) => !crossesMidnight(slot));
+
+    const availability = bookableSlots.map((slot) => {
       const end = addMinutes(slot, MEAL_DURATION_MIN);
       const freeTables = tables.filter(
         (table) =>
