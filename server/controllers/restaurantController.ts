@@ -193,23 +193,57 @@ interface CandidateRestaurant {
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function askGemini(prompt: string): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.3, maxOutputTokens: 800 },
-    }),
+  const payload = JSON.stringify({
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+    generationConfig: {
+      temperature: 0.3,
+      maxOutputTokens: 800,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "ARRAY",
+        items: {
+          type: "OBJECT",
+          properties: {
+            slug: { type: "STRING" },
+            reason: { type: "STRING" },
+          },
+          required: ["slug", "reason"],
+        },
+      },
+    },
   });
-  if (!response.ok) {
-    throw new Error(`Gemini API error ${response.status}`);
+
+  // Gemini can transiently return 429/503 under load; retry with backoff before giving up.
+  const attempts = [0, 900, 2000];
+  let lastError = new Error("Gemini request failed");
+  for (const delay of attempts) {
+    if (delay) await sleep(delay);
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      });
+      if (!response.ok) {
+        lastError = new Error(`Gemini API error ${response.status}`);
+        if (![429, 500, 503].includes(response.status)) throw lastError;
+        continue;
+      }
+      const data: any = await response.json();
+      const parts: Array<{ text?: string }> = data?.candidates?.[0]?.content?.parts ?? [];
+      return parts.map((p) => p.text ?? "").join("");
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      const status = Number((lastError as any)?.cause?.status || 0);
+      if (status && ![429, 500, 503].includes(status)) throw lastError;
+    }
   }
-  const data: any = await response.json();
-  const parts: Array<{ text?: string }> = data?.candidates?.[0]?.content?.parts ?? [];
-  return parts.map((p) => p.text ?? "").join("");
+  throw lastError;
 }
 
 const parseRecommendationJson = (raw: string): Array<{ slug: string; reason: string }> => {
@@ -268,7 +302,7 @@ export const recommendRestaurants = async (req: Request, res: Response): Promise
 
     const candidates = await Restaurant.find(filter).sort({ rating: -1 }).limit(25).lean();
     if (!candidates.length) {
-      res.json({ recommendations: [], source: "ai" });
+      res.json({ recommendations: [], source: "db-fallback", message: "No venues match that vibe yet" });
       return;
     }
 
@@ -306,12 +340,17 @@ export const recommendRestaurants = async (req: Request, res: Response): Promise
 
         const raw = await askGemini(prompt);
         const picks = parseRecommendationJson(raw);
+        let matched = 0;
         for (const pick of picks) {
           if (candidateData.some((c) => c.slug === pick.slug)) {
             reasonById.set(pick.slug, pick.reason.slice(0, 120));
+            matched++;
           }
         }
-        aiUsed = true;
+        aiUsed = matched > 0;
+        if (picks.length && !matched) {
+          console.warn("Gemini returned no usable picks; raw:", raw.slice(0, 300));
+        }
       } catch (err) {
         console.error("Gemini recommendation failed:", err);
         aiUsed = false;
