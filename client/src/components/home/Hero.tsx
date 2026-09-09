@@ -61,7 +61,7 @@ export default function Hero() {
                         ))}
                         <Link
                             to="/menu"
-                            className="text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container hover:bg-secondary hover:text-on-secondary transition-colors inline-flex items-center gap-1"
+                            className="text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full bg-primary text-on-primary hover:bg-secondary hover:text-on-secondary transition-colors inline-flex items-center gap-1"
                         >
                             Full menu <ArrowRight size={12} />
                         </Link>
@@ -109,7 +109,7 @@ export default function Hero() {
                         </div>
                         <button
                             type="submit"
-                            className="flex items-center justify-center gap-2 bg-primary-container text-on-primary-container text-xs font-bold tracking-[0.16em] uppercase px-6 py-3.5 rounded-xl hover:bg-secondary hover:text-on-secondary transition-all duration-300 cursor-pointer"
+                            className="flex items-center justify-center gap-2 bg-primary text-on-primary text-xs font-bold tracking-[0.16em] uppercase px-6 py-3.5 rounded-xl hover:bg-secondary hover:text-on-secondary transition-all duration-300 cursor-pointer"
                         >
                             Search
                         </button>

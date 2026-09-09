@@ -1,31 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Brohi Heritage palette (light) ────────────────────
-     Warm paper + Ajrak maroon + soft gold, ink text. */
-  --color-surface: #faf6ec;
-  --color-paper: #faf6ec;
+  /* ── Brohi "Flame" palette (light) ─────────────────────
+     Clean white canvas, flame orange-red brand color,
+     leaf-green + honey-yellow accents. Ink text. */
+  --color-surface: #ffffff;
+  --color-paper: #fffdf9;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f3ecdd;
-  --color-surface-container-high: #e9dfc9;
+  --color-surface-container-low: #faf5eb;
+  --color-surface-container-high: #f1e7d4;
   --color-raised: #ffffff;
-  --color-on-surface: #2b2113;
-  --color-ink: #2b2113;
-  --color-outline-variant: #ded2ba;
+  --color-on-surface: #2a2118;
+  --color-ink: #2a2118;
+  --color-outline-variant: #e8dfd0;
 
-  --color-primary: #2b2113;        /* ink — headings & key text */
-  --color-on-primary: #fdf8ec;
-  --color-primary-container: #8c2f22; /* Ajrak maroon — brand fills */
-  --color-on-primary-container: #fdf0e3;
+  --color-primary: #c2410c;        /* flame orange-red — brand & CTAs */
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ffdcc2; /* soft peach fills */
+  --color-on-primary-container: #772304;
 
-  --color-secondary: #8c2f22;      /* Ajrak maroon — accents */
-  --color-on-secondary: #fff6ec;
-  --color-secondary-container: #8c2f22;
-  --color-on-secondary-container: #fdf0e3;
+  --color-secondary: #2f7d32;      /* leaf green — accents */
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #d9efd8;
+  --color-on-secondary-container: #0d4a16;
 
-  --color-terracotta: #b95c2e;
-  --color-gold: #b98a2f;
-  --color-cream: #fdf8ec;
+  --color-flame: #d6450c;
+  --color-leaf: #2f7d32;
+  --color-honey: #f4a300;
+  --color-terracotta: #e07b39;
+  --color-gold: #f4a300;
+  --color-cream: #fffaf0;
 
   --color-error: #b3261e;
   --color-on-error: #ffffff;
@@ -49,19 +53,19 @@ body {
 }
 
 ::selection {
-  background: #8c2f22;
-  color: #fdf8ec;
+  background: #c2410c;
+  color: #fffaf0;
 }
 
 /* ── Focus rings ─────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid #8c2f22;
+  outline: 2px solid #c2410c;
   outline-offset: 2px;
 }
 
 /* ── Custom utilities ────────────────────────────────── */
 .ambient-shadow {
-  box-shadow: 0 24px 60px -28px rgba(90, 60, 20, 0.28), 0 6px 18px -12px rgba(90, 60, 20, 0.18);
+  box-shadow: 0 24px 60px -28px rgba(110, 60, 10, 0.22), 0 6px 18px -12px rgba(110, 60, 10, 0.16);
 }
 
 .transition-soft {
@@ -75,36 +79,36 @@ body {
 
 .card-hover-effect:hover {
   transform: translateY(-6px);
-  box-shadow: 0 28px 48px -24px rgba(120, 70, 20, 0.35), 0 0 0 1px rgba(140, 47, 34, 0.22);
-  border-color: rgba(140, 47, 34, 0.3);
+  box-shadow: 0 28px 48px -24px rgba(160, 80, 10, 0.3), 0 0 0 1px rgba(194, 65, 12, 0.18);
+  border-color: rgba(194, 65, 12, 0.28);
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(140, 47, 34, 0.14);
+  border: 1px solid rgba(194, 65, 12, 0.12);
 }
 
-/* Brand gradient text */
+/* Brand gradient text — flame → terracotta → honey */
 .text-gradient-brand {
-  background: linear-gradient(100deg, #8c2f22 10%, #b95c2e 55%, #b98a2f 100%);
+  background: linear-gradient(100deg, #c2410c 10%, #e07b39 55%, #f4a300 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .hairline-brand {
-  background: linear-gradient(90deg, transparent, rgba(140, 47, 34, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(194, 65, 12, 0.5), transparent);
   height: 1px;
 }
 
-/* Ajrak-inspired block-print border strip */
-.ajrak-strip {
+/* Spice-print border strip — flame / paper / leaf */
+.spice-strip {
   height: 10px;
   background:
-    repeating-linear-gradient(90deg, #8c2f22 0 18px, #faf6ec 18px 26px, #2b2113 26px 38px, #faf6ec 38px 46px);
-  border-block: 1px solid #8c2f22;
+    repeating-linear-gradient(90deg, #c2410c 0 18px, #ffffff 18px 26px, #2f7d32 26px 38px, #ffffff 38px 46px);
+  border-block: 1px solid #c2410c;
 }
 
 /* ── Motion ──────────────────────────────────────────── */
@@ -121,16 +125,16 @@ body {
 
 /* ── Scrollbar ───────────────────────────────────────── */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #faf6ec; }
-::-webkit-scrollbar-thumb { background: #cdbb97; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #8c2f22; }
+::-webkit-scrollbar-track { background: #faf5eb; }
+::-webkit-scrollbar-thumb { background: #e2b48a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #c2410c; }
 
 /* Motion system */
 @keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes popIn { 0% { opacity: 0; transform: scale(0.86); } 100% { opacity: 1; transform: scale(1); } }
-@keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(201,162,39,.45); } 70% { box-shadow: 0 0 0 9px rgba(201,162,39,0); } 100% { box-shadow: 0 0 0 0 rgba(201,162,39,0); } }
+@keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(47,125,50,.4); } 70% { box-shadow: 0 0 0 9px rgba(47,125,50,0); } 100% { box-shadow: 0 0 0 0 rgba(47,125,50,0); } }
 
 .page-enter { animation: pageIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
