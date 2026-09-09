@@ -25,3 +25,6 @@ qa/
 
 # QA artifacts
 qa_*
+
+# QA artifacts
+shots/
