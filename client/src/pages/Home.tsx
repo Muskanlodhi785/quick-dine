@@ -6,6 +6,7 @@ import TrendingRow from "../components/home/TrendingRow.tsx";
 import MembershipSection from "../components/home/MembershipSection.tsx";
 import NewsletterCTA from "../components/home/NewsletterCTA.tsx";
 import MarqueeStrip from "../components/home/MarqueeStrip.tsx";
+import AiPicks from "../components/home/AiPicks.tsx";
 import Reveal from "../components/Reveal.tsx";
 import toast from "react-hot-toast";
 import api from "../lib/api.ts";
@@ -46,6 +47,9 @@ catch (error: any) {
                 </Reveal>
                 <Reveal delay={80}>
                     <TrendingRow trending={trending} loading={loading} />
+                </Reveal>
+                <Reveal delay={100}>
+                    <AiPicks />
                 </Reveal>
                 <Reveal delay={120}>
                     <MembershipSection />

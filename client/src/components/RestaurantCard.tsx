@@ -16,9 +16,11 @@ interface RestaurantCardProps {
         featured?: boolean;
         exclusive?: boolean;
     };
+    /** Optional AI reason line (shown when this card came from Gemini). */
+    reason?: string;
 }
 
-export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
+export default function RestaurantCard({ restaurant, reason }: RestaurantCardProps) {
     const rating = Number(restaurant.rating) || 0;
 
     return (
@@ -76,6 +78,13 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
                         <MapPinIcon size={14} className="text-ink/30" />
                         {restaurant.location}
                     </p>
+
+                    {/* AI reason */}
+                    {reason ? (
+                        <p className="mb-4 text-[11px] italic leading-relaxed text-ink/60 border-l-2 border-secondary/50 pl-2.5">
+                            “{reason}”
+                        </p>
+                    ) : null}
                 </div>
 
                 {/* Quick Slots */}
