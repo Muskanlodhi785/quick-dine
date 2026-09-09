@@ -1,63 +1,68 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect, useCallback } from "react";
 import { useAppContext } from "../../context/AppContext.tsx";
 import Navbar from "../../components/Navbar.tsx";
 import Footer from "../../components/Footer.tsx";
 import Loader from "../../components/Loader.tsx";
-import { CalendarIcon, SettingsIcon } from "lucide-react";
+import { CalendarIcon, SettingsIcon, Armchair } from "lucide-react";
 import RestaurantWizard from "../../components/owner/RestaurantWizard.tsx";
 import PendingApproval from "../../components/owner/PendingApproval.tsx";
 import RequestRejected from "../../components/owner/RequestRejected.tsx";
 import OwnerBookings from "../../components/owner/OwnerBookings.tsx";
+import OwnerTables from "../../components/owner/OwnerTables.tsx";
 import OwnerProfileDetails from "../../components/owner/OwnerProfileDetails.tsx";
-// import toast from "react-hot-toast";
 import api from "../../lib/api.ts";
 import toast from "react-hot-toast";
-// import{ dummyMyBookingsData, dummyRestaurant } from "../../assets/assets.ts";
 
 export default function OwnerDashboard() {
     const { logout } = useAppContext();
     const [restaurant, setRestaurant] = useState<any>(null);
     const [bookings, setBookings] = useState<any[]>([]);
+    const [tables, setTables] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<"bookings" | "details">("bookings");
+    const [activeTab, setActiveTab] = useState<"bookings" | "tables" | "details">("bookings");
 
-    const fetchOwnerData = async () => {
-        try{
+    const fetchOwnerData = useCallback(async () => {
+        try {
             setLoading(true);
             const res = await api.get("/owner/restaurants");
             setRestaurant(res.data);
-            if(res.data){
-                if(res.data.status === "approved"){
-                    const bookingsRes = await api.get("/owner/bookings");
-                    setBookings(bookingsRes.data);
-                }
+            if (res.data && res.data.status === "approved") {
+                const [bookingsRes, tablesRes] = await Promise.all([
+                    api.get("/owner/bookings"),
+                    api.get("/owner/tables"),
+                ]);
+                setBookings(bookingsRes.data);
+                setTables(tablesRes.data);
             }
-        }
-        catch(error: any){
-            toast.error(error?.response?.data?.message || error.message);
-        }
-        finally{
+        } catch (error: any) {
+            // 404 with "No restaurant yet" is expected on first login as owner.
+            const message = error?.response?.data?.message || error.message;
+            if (error?.response?.status !== 404) {
+                toast.error(message);
+            }
+            setRestaurant(null);
+        } finally {
             setLoading(false);
         }
-    };
-// const fetchOwnerData = async () => {
-//     try {
-//         const res = await api.get("/owner/restaurants");
-//         console.log("OWNER RESTAURANT:", res.data);
-//         setRestaurant(res.data);
-
-//         const bookings = await api.get("/owner/bookings");
-//         setBookings(bookings.data);
-//     } catch (err: any) {
-//         console.log(err.response?.data);
-//     } finally {
-//         setLoading(false);
-//     }
-// };
-    useEffect(() => {
-        (async () => await fetchOwnerData())();
     }, []);
+
+    useEffect(() => {
+        void fetchOwnerData();
+    }, [fetchOwnerData]);
+
+    // Keep the panel fresh if the admin approves the listing while this tab is open.
+    useEffect(() => {
+        const onFocus = () => {
+            if (document.visibilityState === "visible") void fetchOwnerData();
+        };
+        window.addEventListener("focus", onFocus);
+        document.addEventListener("visibilitychange", onFocus);
+        return () => {
+            window.removeEventListener("focus", onFocus);
+            document.removeEventListener("visibilitychange", onFocus);
+        };
+    }, [fetchOwnerData]);
 
     if (loading) {
         return <Loader text="Loading Owner Dashboard..." />;
@@ -72,7 +77,9 @@ export default function OwnerDashboard() {
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-outline-variant/10 pb-8 mb-8">
                     <div>
                         <h1 className="font-display text-2xl md:text-3xl text-primary">Restaurant Portal</h1>
-                        <p className="text-xs text-black/55 mt-1.5">Review capacity limits and process live reservations.</p>
+                        <p className="text-xs text-ink/65 mt-1.5">
+                            Manage your tables, review reservation requests and keep your profile fresh.
+                        </p>
                     </div>
                     <button
                         onClick={logout}
@@ -82,23 +89,26 @@ export default function OwnerDashboard() {
                     </button>
                 </div>
 
-                {/* Case 1: No Restaurant Setup Profile */}
+                {/* Case 1: No restaurant yet */}
                 {!restaurant ? (
-                    <RestaurantWizard setRestaurant={setRestaurant} />
+                    <RestaurantWizard
+                        setRestaurant={(r: any) => {
+                            setRestaurant(r);
+                            void fetchOwnerData();
+                        }}
+                    />
                 ) : restaurant.status === "pending" ? (
-                    /* Case 2: Profile Pending Approval */
                     <PendingApproval restaurant={restaurant} />
                 ) : restaurant.status === "rejected" ? (
-                    /* Case 3: Rejected */
                     <RequestRejected restaurantName={restaurant.name} />
                 ) : (
-                    /* Case 4: Approved - Full Dashboard Panel */
+                    /* Approved - full dashboard */
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                        {/* Left Tab selector sidebar */}
-                        <aside className="lg:col-span-3 space-y-6 bg-white border border-outline-variant/20 p-6 rounded-md shadow-sm h-fit">
+                        {/* Sidebar */}
+                        <aside className="lg:col-span-3 space-y-6 bg-raised border border-outline-variant/20 p-6 rounded-md shadow-sm h-fit">
                             <div className="flex items-center gap-3.5 border-b border-outline-variant/10 pb-5">
                                 <span className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-medium text-base">
-                                    {restaurant.name.charAt(0)}
+                                    {(restaurant.name || "R").charAt(0)}
                                 </span>
                                 <div>
                                     <h4 className="font-display font-medium text-primary text-base line-clamp-1">{restaurant.name}</h4>
@@ -112,17 +122,25 @@ export default function OwnerDashboard() {
                                 <button
                                     onClick={() => setActiveTab("bookings")}
                                     className={`w-full flex items-center gap-3 px-4 py-3 text-xs font-medium tracking-wider uppercase text-left rounded-sm cursor-pointer transition-colors ${
-                                        activeTab === "bookings" ? "bg-primary text-white" : "text-black/55 hover:bg-surface"
+                                        activeTab === "bookings" ? "bg-primary text-on-primary" : "text-ink/65 hover:bg-surface"
                                     }`}
                                 >
                                     <CalendarIcon size={14} />
-                                    Bookings ({bookings.length})
+                                    Bookings ({bookings.filter((b) => b.status === "pending").length} new)
                                 </button>
-
+                                <button
+                                    onClick={() => setActiveTab("tables")}
+                                    className={`w-full flex items-center gap-3 px-4 py-3 text-xs font-medium tracking-wider uppercase text-left rounded-sm cursor-pointer transition-colors ${
+                                        activeTab === "tables" ? "bg-primary text-on-primary" : "text-ink/65 hover:bg-surface"
+                                    }`}
+                                >
+                                    <Armchair size={14} />
+                                    Tables ({tables.length})
+                                </button>
                                 <button
                                     onClick={() => setActiveTab("details")}
                                     className={`w-full flex items-center gap-3 px-4 py-3 text-xs font-medium tracking-wider uppercase text-left rounded-sm cursor-pointer transition-colors ${
-                                        activeTab === "details" ? "bg-primary text-white" : "text-black/55 hover:bg-surface"
+                                        activeTab === "details" ? "bg-primary text-on-primary" : "text-ink/65 hover:bg-surface"
                                     }`}
                                 >
                                     <SettingsIcon size={14} />
@@ -131,15 +149,16 @@ export default function OwnerDashboard() {
                             </nav>
                         </aside>
 
-                        {/* Content Area */}
+                        {/* Content */}
                         <div className="lg:col-span-9 space-y-8">
-                            {/* Tab 1: Bookings List */}
-                            {activeTab === "bookings" && (
-                                <OwnerBookings bookings={bookings} setBookings={setBookings} totalSeats={restaurant.totalSeats} />
+                            {activeTab === "bookings" && <OwnerBookings bookings={bookings} setBookings={setBookings} />}
+                            {activeTab === "tables" && <OwnerTables tables={tables} setTables={setTables} />}
+                            {activeTab === "details" && (
+                                <OwnerProfileDetails
+                                    restaurant={restaurant}
+                                    setRestaurant={setRestaurant}
+                                />
                             )}
-
-                            {/* Tab 3: Update details & slots capacity */}
-                            {activeTab === "details" && <OwnerProfileDetails restaurant={restaurant} setRestaurant={setRestaurant} />}
                         </div>
                     </div>
                 )}

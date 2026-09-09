@@ -1,39 +1,36 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Star } from "lucide-react";
-import { dummyReviews } from "../../assets/assets.ts";
 
-export default function RestaurantReviews() {
+interface RestaurantReviewsProps {
+    restaurant?: any;
+}
+
+export default function RestaurantReviews({ restaurant }: RestaurantReviewsProps) {
+    const rating = Number(restaurant?.rating) || 0;
+    const reviewCount = Number(restaurant?.reviews) || 0;
+
     return (
-        <section className="space-y-8 pt-6 border-t border-outline-variant/10 text-left">
+        <section className="space-y-6 pt-6 border-t border-outline-variant/10 text-left">
             <h3 className="font-display text-xl font-semibold text-primary">Guest Experiences</h3>
 
-            {/* Reviews list */}
-            <div className="space-y-6">
-                {dummyReviews.length === 0 ? (
-                    <p className="text-xs text-black/55/80 italic">No reviews yet. Be the first to share your experience!</p>
-                ) : (
-                    dummyReviews.map((r: any) => (
-                        <div key={r._id} className="pb-6 border-b border-outline-variant/10 last:border-b-0 space-y-2">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h4 className="text-sm font-medium text-primary">{r.userName}</h4>
-                                    <span className="text-xs text-black/55">Visited {new Date(r.visitedDate).toLocaleDateString()}</span>
-                                </div>
-                                <div className="flex items-center gap-0.5 text-secondary">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star
-                                            key={i}
-                                            size={12}
-                                            fill={i < r.rating ? "currentColor" : "none"}
-                                            className={i < r.rating ? "" : "text-outline-variant"}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                            <p className="text-xs text-black/55 max-w-lg leading-relaxed">{r.comment}</p>
+            {/* Rating summary from live data */}
+            <div className="bg-surface-container-low/40 border border-outline-variant/10 rounded-md p-5 flex flex-wrap items-center gap-x-8 gap-y-3">
+                <div className="flex items-center gap-3">
+                    <span className="font-display text-4xl font-medium text-primary">
+                        {rating > 0 ? rating.toFixed(1) : "—"}
+                    </span>
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-0.5 text-amber-400">
+                            {[...Array(5)].map((_, i) => (
+                                <Star key={i} size={14} fill={i < Math.round(rating) ? "currentColor" : "none"} className={i < Math.round(rating) ? "" : "text-ink/30"} />
+                            ))}
                         </div>
-                    ))
-                )}
+                        <p className="text-xs text-ink/65">{reviewCount} verified reviews</p>
+                    </div>
+                </div>
+                <p className="text-xs text-ink/65 leading-relaxed max-w-md">
+                    Ratings are collected from completed bookings. Leave the restaurant your feedback after your visit to help future diners.
+                </p>
             </div>
         </section>
     );

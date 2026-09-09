@@ -1,36 +1,67 @@
 @import "tailwindcss";
 
 @theme {
-  --color-surface: #f9f9f9;
+  /* ── Brohi Heritage palette (light) ────────────────────
+     Warm paper + Ajrak maroon + soft gold, ink text. */
+  --color-surface: #faf6ec;
+  --color-paper: #faf6ec;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f3f3f4;
-  --color-on-surface: #1a1c1c;
-  --color-outline-variant: #c4c7c7;
-  --color-primary: #000000;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #1c1b1b;
-  --color-on-primary-container: #858383;
-  --color-secondary: #775a19;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #fed488;
-  --color-on-secondary-container: #785a1a;
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  --color-surface-container-low: #f3ecdd;
+  --color-surface-container-high: #e9dfc9;
+  --color-raised: #ffffff;
+  --color-on-surface: #2b2113;
+  --color-ink: #2b2113;
+  --color-outline-variant: #ded2ba;
 
-  /* Fonts */
-  --font-display: "Playfair Display", serif;
-  --font-body: "Outfit", sans-serif;
+  --color-primary: #2b2113;        /* ink — headings & key text */
+  --color-on-primary: #fdf8ec;
+  --color-primary-container: #8c2f22; /* Ajrak maroon — brand fills */
+  --color-on-primary-container: #fdf0e3;
+
+  --color-secondary: #8c2f22;      /* Ajrak maroon — accents */
+  --color-on-secondary: #fff6ec;
+  --color-secondary-container: #8c2f22;
+  --color-on-secondary-container: #fdf0e3;
+
+  --color-terracotta: #b95c2e;
+  --color-gold: #b98a2f;
+  --color-cream: #fdf8ec;
+
+  --color-error: #b3261e;
+  --color-on-error: #ffffff;
+  --color-error-container: #f9dedc;
+  --color-on-error-container: #410e0b;
+
+  /* Fonts — Fraunces (display, artisan serif) + Manrope (body) */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Manrope", "Segoe UI", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: var(--font-body);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Design Utilities */
+::selection {
+  background: #8c2f22;
+  color: #fdf8ec;
+}
+
+/* ── Focus rings ─────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #8c2f22;
+  outline-offset: 2px;
+}
+
+/* ── Custom utilities ────────────────────────────────── */
 .ambient-shadow {
-  box-shadow: 0 30px 60px -15px rgba(26, 26, 26, 0.04);
+  box-shadow: 0 24px 60px -28px rgba(90, 60, 20, 0.28), 0 6px 18px -12px rgba(90, 60, 20, 0.18);
 }
 
 .transition-soft {
@@ -38,29 +69,58 @@ body {
 }
 
 .card-hover-effect {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.45s ease;
 }
 
 .card-hover-effect:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(26, 26, 26, 0.06);
+  transform: translateY(-6px);
+  box-shadow: 0 28px 48px -24px rgba(120, 70, 20, 0.35), 0 0 0 1px rgba(140, 47, 34, 0.22);
+  border-color: rgba(140, 47, 34, 0.3);
 }
 
-/* Custom Scrollbar for premium visual */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(140, 47, 34, 0.14);
 }
 
-::-webkit-scrollbar-track {
-  background: #f9f9f9;
+/* Brand gradient text */
+.text-gradient-brand {
+  background: linear-gradient(100deg, #8c2f22 10%, #b95c2e 55%, #b98a2f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #dadada;
-  border-radius: 3px;
+.hairline-brand {
+  background: linear-gradient(90deg, transparent, rgba(140, 47, 34, 0.5), transparent);
+  height: 1px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #c5a059;
+/* Ajrak-inspired block-print border strip */
+.ajrak-strip {
+  height: 10px;
+  background:
+    repeating-linear-gradient(90deg, #8c2f22 0 18px, #faf6ec 18px 26px, #2b2113 26px 38px, #faf6ec 38px 46px);
+  border-block: 1px solid #8c2f22;
 }
+
+/* ── Motion ──────────────────────────────────────────── */
+@keyframes qdFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes qdZoomIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes qdSlideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes qdFadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+.fade-in { animation: qdFadeIn 0.8s ease both; }
+.fade-up { animation: qdFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.zoom-in-95 { animation: qdZoomIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.slide-in-from-top { animation: qdSlideDown 0.4s ease both; }
+.slide-in-from-top-2 { animation: qdSlideDown 0.3s ease both; }
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #faf6ec; }
+::-webkit-scrollbar-thumb { background: #cdbb97; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #8c2f22; }

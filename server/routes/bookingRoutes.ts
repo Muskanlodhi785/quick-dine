@@ -1,10 +1,15 @@
-import {Router} from 'express'
-import {protect} from '../middlewares/auth.js'
-import {createBooking, getMyBookings, cancelBookings} from '../controllers/bookingControllerr.js'
+import { Router } from "express";
+import { protect } from "../middlewares/auth.js";
+import {
+  cancelBooking,
+  createBooking,
+  getMyBookings,
+} from "../controllers/bookingController.js";
 
-const bookingRouter = Router()
+const bookingRouter = Router();
 
-bookingRouter.post('/',protect, createBooking)
-bookingRouter.get('/my',protect, getMyBookings)
-bookingRouter.delete('/:id/cancel',protect, cancelBookings)
-export default bookingRouter
+bookingRouter.post("/", protect, createBooking);
+bookingRouter.get("/my", protect, getMyBookings);
+bookingRouter.delete("/:id/cancel", protect, cancelBooking);
+
+export default bookingRouter;

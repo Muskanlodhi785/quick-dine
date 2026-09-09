@@ -1,71 +1,85 @@
-import { randomBytes } from 'crypto'
-import { Document , model, Schema, Types } from 'mongoose'
-export interface IBooking extends Document{
-    user: Types.ObjectId
-    restaurant: Types.ObjectId
-    date: Date
-    time: string
-    guests: number
-    occasion?: string
-    specialRequests?: string
-    status:  'confirmed' | 'cancelled' | 'completed'
-    bookingId: string
-    createdAt: Date
-    updatedAt: Date
-}        
-const bookingSchema = new Schema <IBooking>(
+import { randomBytes } from "crypto";
+import { Document, model, Schema, Types } from "mongoose";
+
+export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
+
+export interface IBooking extends Document {
+  user: Types.ObjectId;
+  restaurant: Types.ObjectId;
+  table: Types.ObjectId;
+  date: string; // "YYYY-MM-DD" (local day, timezone-safe)
+  startTime: string; // "HH:mm" (24h)
+  endTime: string; // "HH:mm" (24h)
+  partySize: number;
+  notes?: string;
+  status: BookingStatus;
+  bookingId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const bookingSchema = new Schema<IBooking>(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
+      ref: "User",
+      required: true,
     },
     restaurant: {
       type: Schema.Types.ObjectId,
-      ref: 'Restaurant',
-      required: true
+      ref: "Restaurant",
+      required: true,
+    },
+    table: {
+      type: Schema.Types.ObjectId,
+      ref: "Table",
+      required: true,
     },
     date: {
-      type: Date,
-      required: true
-    },
-    time: {
       type: String,
-      required: true
+      required: true,
+      match: /^\d{4}-\d{2}-\d{2}$/,
     },
-    guests: {
+    startTime: {
+      type: String,
+      required: true,
+      match: /^([01]\d|2[0-3]):[0-5]\d$/,
+    },
+    endTime: {
+      type: String,
+      required: true,
+      match: /^([01]\d|2[0-3]):[0-5]\d$/,
+    },
+    partySize: {
       type: Number,
       required: true,
-      min: 1
+      min: 1,
     },
-    occasion: {
+    notes: {
       type: String,
-      trim: true
-    },
-    specialRequests: {
-      type: String,
-      trim: true
+      trim: true,
+      maxlength: 500,
     },
     status: {
       type: String,
-      enum: ['confirmed', 'cancelled', 'completed'],
-      default: 'confirmed'
+      enum: ["pending", "confirmed", "cancelled", "completed"],
+      default: "pending",
     },
     bookingId: {
       type: String,
-      unique: true
-    }
+      unique: true,
+    },
   },
-  {
-    timestamps: true
+  { timestamps: true }
+);
+
+// Speeds up conflict queries: active bookings for a table on a day.
+bookingSchema.index({ table: 1, date: 1, status: 1, startTime: 1 });
+
+bookingSchema.pre("save", function () {
+  if (!this.bookingId) {
+    this.bookingId = `GR-${randomBytes(4).toString("hex").toUpperCase()}`;
   }
-)
-
-
-bookingSchema.pre("save", function() {
-    if (!this.bookingId) {
-        this.bookingId = `GR-${randomBytes(4).toString('hex').toUpperCase()}`
-    }
 });
 
-export const Booking = model<IBooking>('Booking', bookingSchema)
+export const Booking = model<IBooking>("Booking", bookingSchema);

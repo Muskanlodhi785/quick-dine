@@ -1,4 +1,4 @@
-import { useNavigate, Link } from "react-router-dom";
+﻿import { useNavigate, Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { cuisines } from "../../assets/assets";
 
@@ -28,9 +28,9 @@ export default function CuisineBrowse() {
                         <button
                             key={c.name}
                             onClick={() => handleCuisineClick(c.name)}
-                            className="group cursor-pointer text-center py-8 bg-white border border-outline-variant/20 hover:border-secondary transition-soft flex flex-col items-center justify-center"
+                            className="group cursor-pointer text-center py-8 bg-raised border border-outline-variant/20 hover:border-secondary transition-soft flex flex-col items-center justify-center"
                         >
-                            <Icon size={32} strokeWidth={1.1} className="text-black/55 group-hover:text-secondary mb-4 transition-colors" />
+                            <Icon size={32} strokeWidth={1.1} className="text-ink/65 group-hover:text-secondary mb-4 transition-colors" />
                             <span className="text-[10px] tracking-widest text-primary">{c.label}</span>
                         </button>
                     );

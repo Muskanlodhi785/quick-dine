@@ -10,6 +10,7 @@ export interface IRestaurant extends Document{
     location: string
     address: string
     image: string
+    imagePublicId: string
     chef: string
     tags: string[]
     availableSlots: string[]
@@ -70,6 +71,10 @@ const restaurantSchema = new Schema <IRestaurant>(
       required: true
     },
     image: {
+      type: String,
+      default: ""
+    },
+    imagePublicId: {
       type: String,
       default: ""
     },

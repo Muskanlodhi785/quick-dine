@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Upload, Image } from "lucide-react";
@@ -110,7 +110,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
     };
 
     return (
-        <div className="bg-white border border-outline-variant/20 p-6 md:p-8 rounded-md shadow-sm space-y-6 text-left">
+        <div className="bg-raised border border-outline-variant/20 p-6 md:p-8 rounded-md shadow-sm space-y-6 text-left">
             <h3 className="font-display text-lg font-medium text-primary border-b border-outline-variant/10 pb-4">
                 Update Profile & Capacity
             </h3>
@@ -118,7 +118,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
             <form onSubmit={handleUpdateRestaurant} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Restaurant Name</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Restaurant Name</label>
                         <input
                             type="text"
                             required
@@ -128,7 +128,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
                         />
                     </div>
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Cuisine Type</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Cuisine Type</label>
                         <input
                             type="text"
                             required
@@ -140,7 +140,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
                 </div>
 
                 <div className="space-y-1">
-                    <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Description</label>
+                    <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Description</label>
                     <textarea
                         required
                         rows={4}
@@ -152,20 +152,20 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
 
                 {/* Cover Image Upload */}
                 <div className="space-y-1">
-                    <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Restaurant Cover Image</label>
+                    <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Restaurant Cover Image</label>
                     <div className="flex flex-col md:flex-row gap-4 items-center bg-surface-container-low/30 border border-outline-variant/40 p-4 rounded-sm">
                         <div className="relative w-32 h-24 bg-surface border border-outline-variant/30 rounded-sm overflow-hidden shrink-0 flex items-center justify-center">
                             {imagePreview ? (
                                 <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                             ) : (
-                                <Image size={24} className="text-black/30" />
+                                <Image size={24} className="text-ink/40" />
                             )}
                         </div>
                         <div className="grow space-y-2 text-center md:text-left w-full">
-                            <p className="text-[11px] text-black/55 leading-relaxed">
+                            <p className="text-[11px] text-ink/65 leading-relaxed">
                                 Upload a high-resolution banner photo for your restaurant page. Supports JPG, PNG.
                             </p>
-                            <label className="inline-flex items-center gap-1.5 px-4 py-2 border border-outline-variant/40 hover:border-primary hover:text-primary transition-colors text-[10px] font-medium tracking-wider uppercase rounded-sm cursor-pointer bg-white">
+                            <label className="inline-flex items-center gap-1.5 px-4 py-2 border border-outline-variant/40 hover:border-primary hover:text-primary transition-colors text-[10px] font-medium tracking-wider uppercase rounded-sm cursor-pointer bg-raised">
                                 <Upload size={12} />
                                 {imageFile ? "Change Image" : "Upload Image"}
                                 <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
@@ -177,7 +177,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Price Range</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Price Range</label>
                         <select
                             value={priceRange}
                             onChange={(e) => setPriceRange(e.target.value)}
@@ -190,7 +190,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
                         </select>
                     </div>
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Location (City)</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Location (City)</label>
                         <input
                             type="text"
                             required
@@ -200,7 +200,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
                         />
                     </div>
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">
                             Total Capacity (Seats)
                         </label>
                         <input
@@ -216,7 +216,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Address</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Address</label>
                         <input
                             type="text"
                             required
@@ -226,7 +226,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
                         />
                     </div>
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Executive Chef</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Executive Chef</label>
                         <input
                             type="text"
                             required
@@ -238,7 +238,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
                 </div>
 
                 <div className="space-y-1">
-                    <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Tags (comma separated)</label>
+                    <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Tags (comma separated)</label>
                     <input
                         type="text"
                         value={tags}
@@ -248,7 +248,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
                 </div>
 
                 <div className="space-y-2">
-                    <span className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Available Slots</span>
+                    <span className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Available Slots</span>
                     <div className="flex flex-wrap gap-2">
                         {defaultSlots.map((slot) => {
                             const isSelected = availableSlots.includes(slot);
@@ -260,7 +260,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
                                     className={`py-1.5 px-3 text-[10px] border transition-colors cursor-pointer rounded-sm ${
                                         isSelected
                                             ? "bg-primary border-primary text-white"
-                                            : "border-outline-variant/40 text-black/55 hover:border-primary"
+                                            : "border-outline-variant/40 text-ink/65 hover:border-primary"
                                     }`}
                                 >
                                     {slot}
@@ -273,7 +273,7 @@ export default function OwnerProfileDetails({ restaurant, setRestaurant }: Owner
                 <button
                     type="submit"
                     disabled={formLoading}
-                    className="w-full bg-primary hover:bg-secondary text-white text-xs font-medium tracking-widest uppercase py-3.5 transition-colors cursor-pointer"
+                    className="w-full bg-primary hover:bg-secondary text-on-secondary text-xs font-medium tracking-widest uppercase py-3.5 transition-colors cursor-pointer"
                 >
                     {formLoading ? "SAVING CHANGES..." : "SAVE PROFILE DETAILS"}
                 </button>

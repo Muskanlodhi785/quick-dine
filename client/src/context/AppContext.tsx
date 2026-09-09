@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
@@ -66,7 +66,7 @@ export const AppContextProvider = ({ children }: Props) => {
         localStorage.setItem("token", userToken);
         setToken(userToken);
         setUser(userData);
-        toast.success(`welcome to quickdine club`);
+        toast.success(`welcome to Brohi Club`);
         return true;
        }
       catch (error: any) {

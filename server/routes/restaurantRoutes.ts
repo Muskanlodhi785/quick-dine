@@ -1,28 +1,18 @@
-// import {Router} from 'express'
-// import { getFeaturedRestaurants,getRestaurantAvailability,getRestaurants,getRestaurantBySlug } from '../controllers/restaurantController.js'
-
-// const restaurantrouter = Router()
-
-// restaurantrouter.get('/', getRestaurants)
-// restaurantrouter.get('/:id', getFeaturedRestaurants)
-// restaurantrouter.get('/:slug', getRestaurantBySlug)
-// restaurantrouter.get('/:id/availability', getRestaurantAvailability)
-
-// export default restaurantrouter
-
 import { Router } from "express";
 import {
   getFeaturedRestaurants,
   getRestaurantAvailability,
   getRestaurants,
   getRestaurantBySlug,
+  recommendRestaurants,
 } from "../controllers/restaurantController.js";
 
-const restaurantrouter = Router();
+const restaurantRouter = Router();
 
-restaurantrouter.get("/", getRestaurants);
-restaurantrouter.get("/featured", getFeaturedRestaurants);
-restaurantrouter.get("/:id/availability", getRestaurantAvailability);
-restaurantrouter.get("/:slug", getRestaurantBySlug);
+restaurantRouter.get("/", getRestaurants);
+restaurantRouter.get("/featured", getFeaturedRestaurants);
+restaurantRouter.get("/recommend", recommendRestaurants);
+restaurantRouter.get("/:id/availability", getRestaurantAvailability);
+restaurantRouter.get("/:slug", getRestaurantBySlug);
 
-export default restaurantrouter;
+export default restaurantRouter;

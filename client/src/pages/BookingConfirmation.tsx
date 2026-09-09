@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
-import { useAppContext } from "../context/AppContext.tsx";
 import Navbar from "../components/Navbar.tsx";
 import Footer from "../components/Footer.tsx";
 import { ChevronRight } from "lucide-react";
@@ -11,65 +10,37 @@ import BookingSuccess from "../components/booking/BookingSuccess.tsx";
 import BookingSummary from "../components/booking/BookingSummary.tsx";
 import BookingForm from "../components/booking/BookingForm.tsx";
 import api from "../lib/api.ts";
+
 export default function BookingConfirmation() {
     const { slug } = useParams<{ slug: string }>();
     const [searchParams] = useSearchParams();
-    const { user } = useAppContext();
     const navigate = useNavigate();
 
     const [restaurant, setRestaurant] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [confirming, setConfirming] = useState(false);
     const [confirmedBooking, setConfirmedBooking] = useState<any>(null);
-
-    // Form inputs
-    const [name, setName] = useState(user?.name || "");
-    const [email, setEmail] = useState(user?.email || "");
-    const [phone, setPhone] = useState(user?.phone || "");
-    const [occasion, setOccasion] = useState("");
-    const [specialRequests, setSpecialRequests] = useState("");
+    const [notes, setNotes] = useState("");
 
     // From Query Params
     const slot = searchParams.get("slot") || "";
     const date = searchParams.get("date") || "";
     const guests = searchParams.get("guests") || "2";
-
-    useEffect(() => {
-        // Prefill form when user details load
-        if (user) {
-            (() => {
-                setName(user.name);
-                setEmail(user.email);
-                if (user.phone) setPhone(user.phone);
-            })();
-        }
-    }, [user]);
+    const tableId = searchParams.get("table") || "";
+    const tableLabel = searchParams.get("tableLabel") || "";
 
     useEffect(() => {
         const fetchRestaurant = async () => {
-           try{
-            setLoading(true)
-            const res = await api.get("/restaurant");
-
-const restaurant = res.data.find(
-    (r: any) => r.slug === slug
-);
-
-if (!restaurant) {
-    toast.error("Restaurant not found");
-    navigate("/");
-    return;
-}
-
-setRestaurant(restaurant);
-           }
-           catch(error : any){
-   toast.error(error?.response?.data?.message || "Something went wrong")
-   navigate("/")
-           }
-           finally{
-setLoading(false)
-           }
+            try {
+                setLoading(true);
+                const res = await api.get(`/restaurant/${slug}`);
+                setRestaurant(res.data);
+            } catch (error: any) {
+                toast.error(error?.response?.data?.error || error?.response?.data?.message || "Restaurant not found");
+                navigate("/");
+            } finally {
+                setLoading(false);
+            }
         };
 
         if (slug) {
@@ -84,38 +55,28 @@ setLoading(false)
     if (!restaurant) return null;
 
     const handleConfirmSubmit = async (e: React.FormEvent) => {
-        console.log({
-  restaurant: restaurant._id,
-  date,
-  time: slot,
-  guests,
-  occasion,
-  specialRequests,
-  name,
-  email,
-  phone,
-});
         e.preventDefault();
 
-        if (!slot || !date) {
-            toast.error("Reservation details are missing. Return to restaurant details.");
+        if (!slot || !date || !tableId) {
+            toast.error("Reservation details are missing. Return to the restaurant page and pick a table.");
+            navigate(`/restaurant/${slug}`);
             return;
         }
 
         try {
             setConfirming(true);
-                console.log("API URL:", import.meta.env.VITE_API_URL);
             const res = await api.post("/booking", {
                 restaurantId: restaurant._id,
-    date,
-    time: slot,
-    guests,
-    specialRequests,
-            })
-            setConfirmedBooking(res.data)
-            toast.success("Reservation confirmed!");
+                tableId,
+                date,
+                startTime: slot,
+                partySize: Number(guests),
+                notes: notes || undefined,
+            });
+            setConfirmedBooking(res.data);
+            toast.success("Reservation request sent to the restaurant!");
         } catch (error: any) {
-            toast.error(error?.response?.data?.message || error?.message);
+            toast.error(error?.response?.data?.message || "Could not create the booking. Please try again.");
         } finally {
             setConfirming(false);
         }
@@ -126,8 +87,15 @@ setLoading(false)
         return (
             <div className="min-h-screen bg-surface flex flex-col pt-20">
                 <Navbar />
-                <main className="grow flex items-center justify-center py-12 px-6">
-                    <BookingSuccess confirmedBooking={confirmedBooking} restaurant={restaurant} date={date} slot={slot} guests={guests} />
+                <main className="grow max-w-7xl w-full mx-auto px-6 md:px-10 py-16 flex items-start justify-center">
+                    <BookingSuccess
+                        confirmedBooking={confirmedBooking}
+                        restaurant={restaurant}
+                        date={date}
+                        slot={slot}
+                        guests={guests}
+                        tableLabel={tableLabel}
+                    />
                 </main>
                 <Footer />
             </div>
@@ -138,39 +106,32 @@ setLoading(false)
         <div className="min-h-screen bg-surface flex flex-col pt-20">
             <Navbar />
 
-            {/* Main Booking Content */}
-            <main className="grow max-w-7xl w-full mx-auto px-6 md:px-10 py-12">
-                {/* Progress bar header */}
-                <div className="flex items-center gap-2 mb-10 pb-4 border-b border-outline-variant/10 text-xs text-black/55">
-                    <Link to={`/restaurant/${restaurant.slug}`} className="hover:text-primary transition-colors">
+            <main className="grow max-w-5xl w-full mx-auto px-6 md:px-10 py-12">
+                {/* Breadcrumb */}
+                <nav className="flex items-center gap-2 text-xs text-ink/65 mb-8">
+                    <Link to="/" className="hover:text-secondary transition-colors">
+                        Home
+                    </Link>
+                    <ChevronRight size={12} />
+                    <Link to={`/restaurant/${restaurant.slug}`} className="hover:text-secondary transition-colors">
                         {restaurant.name}
                     </Link>
-                    <ChevronRight size={14} />
-                    <span className="text-primary">Details & Confirmation</span>
-                </div>
+                    <ChevronRight size={12} />
+                    <span className="text-primary">Reserve</span>
+                </nav>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-                    {/* Left Column (Reservation Summary) */}
-                    <div className="lg:col-span-5">
-                        <BookingSummary restaurant={restaurant} date={date} slot={slot} guests={guests} />
-                    </div>
-
-                    {/* Right Column (Guest Details Form) */}
-                    <div className="lg:col-span-7">
-                        <BookingForm
-                            name={name}
-                            setName={setName}
-                            email={email}
-                            setEmail={setEmail}
-                            phone={phone}
-                            setPhone={setPhone}
-                            occasion={occasion}
-                            setOccasion={setOccasion}
-                            specialRequests={specialRequests}
-                            setSpecialRequests={setSpecialRequests}
-                            confirming={confirming}
-                            onSubmit={handleConfirmSubmit}
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
+                    <div className="lg:col-span-2">
+                        <BookingSummary
+                            restaurant={restaurant}
+                            date={date}
+                            slot={slot}
+                            guests={guests}
+                            tableLabel={tableLabel}
                         />
+                    </div>
+                    <div className="lg:col-span-3">
+                        <BookingForm notes={notes} setNotes={setNotes} confirming={confirming} onSubmit={handleConfirmSubmit} />
                     </div>
                 </div>
             </main>
