@@ -20,6 +20,7 @@ export default function Dashboard() {
 
     const [bookings, setBookings] = useState<any[]>([]);
     const [recommendations, setRecommendations] = useState<any[]>([]);
+    const [recSource, setRecSource] = useState<string>("");
     const [loadingBookings, setLoadingBookings] = useState(true);
 
     // Fetch user bookings
@@ -49,6 +50,7 @@ export default function Dashboard() {
                     params: { preference: "romantic premium dining", partySize: 2, limit: 3 },
                 });
                 const items = response.data?.recommendations;
+                setRecSource(response.data?.source || "");
                 if (Array.isArray(items)) setRecommendations(items);
             } catch (error: any) {
                 toast.error(error?.response?.data?.message || error?.message);
@@ -237,9 +239,18 @@ export default function Dashboard() {
                     {/* Recommendations Section */}
                     {recommendations.length > 0 && (
                         <div className="space-y-4 pt-10 border-t border-outline-variant/10">
-                            <h3 className="font-display text-lg font-medium text-primary">AI-Picked for You</h3>
+                            <div className="flex items-center gap-3 flex-wrap">
+                                <h3 className="font-display text-lg font-medium text-primary">Picked for You</h3>
+                                {recSource === "ai" && (
+                                    <span className="inline-flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.18em] bg-secondary/15 text-secondary px-2.5 py-1 rounded-full">
+                                        ✨ AI-curated by Gemini
+                                    </span>
+                                )}
+                            </div>
                             <p className="text-xs text-ink/65 -mt-2">
-                                Gemini shortlisted these spots for a romantic, premium night out.
+                                {recSource === "ai"
+                                    ? "Gemini shortlisted these spots for your vibe tonight."
+                                    : "Shortlisted from our highest-rated venues."}
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {recommendations.slice(0, 3).map((r) => (

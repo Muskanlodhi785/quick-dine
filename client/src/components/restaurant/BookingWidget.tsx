@@ -141,21 +141,42 @@ export default function BookingWidget({
                             <Armchair size={13} /> CHOOSE A TABLE · {selectedSlotInfo.time}
                         </span>
                         {selectedSlotInfo.tables?.length ? (
-                            <div className="flex flex-wrap gap-2">
-                                {selectedSlotInfo.tables.map((t: any) => (
-                                    <button
-                                        key={t._id}
-                                        type="button"
-                                        onClick={() => setSelectedTableId(t._id)}
-                                        className={`px-3 py-2 text-[10px] font-medium border rounded-sm cursor-pointer transition-colors ${
-                                            selectedTableId === t._id
-                                                ? "bg-primary border-primary text-white"
-                                                : "border-outline-variant/40 text-ink/65 hover:border-primary hover:text-primary"
-                                        }`}
-                                    >
-                                        {t.tableNumber} · {t.capacity} seats
-                                    </button>
-                                ))}
+                            <div className="flex flex-wrap gap-3 pt-1">
+                                {selectedSlotInfo.tables.map((t: any) => {
+                                    const active = selectedTableId === t._id;
+                                    const seats = Array.from({ length: Math.min(t.capacity, 8) });
+                                    return (
+                                        <button
+                                            key={t._id}
+                                            type="button"
+                                            onClick={() => setSelectedTableId(t._id)}
+                                            aria-pressed={active}
+                                            className={`group flex flex-col items-center gap-1.5 min-w-[74px] px-3 py-2.5 border rounded-lg cursor-pointer transition-all duration-200 ${
+                                                active
+                                                    ? "bg-secondary/10 border-secondary text-secondary step-pulse"
+                                                    : "border-outline-variant/50 text-ink/60 hover:border-secondary/70 hover:text-secondary hover:-translate-y-0.5"
+                                            }`}
+                                        >
+                                            {/* mini top-view: seats around the table */}
+                                            <span className="flex flex-wrap justify-center gap-[3px] w-14">
+                                                {seats.map((_, i) => (
+                                                    <i
+                                                        key={i}
+                                                        className={`w-[5px] h-[5px] rounded-full transition-colors ${
+                                                            active ? "bg-secondary" : "bg-current opacity-60"
+                                                        }`}
+                                                    />
+                                                ))}
+                                            </span>
+                                            <span className="text-[10px] font-semibold tracking-wide">
+                                                {t.tableNumber}
+                                            </span>
+                                            <span className={`text-[9px] -mt-1 ${active ? "text-secondary/80" : "text-ink/40"}`}>
+                                                {t.capacity} {t.capacity === 1 ? "seat" : "seats"}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         ) : (
                             <p className="text-xs text-ink/55 italic">No free tables for this slot.</p>
