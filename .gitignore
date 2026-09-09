@@ -31,3 +31,6 @@ shots/
 
 # generated image staging
 media-output/
+
+# root QA screenshots
+/*.png
