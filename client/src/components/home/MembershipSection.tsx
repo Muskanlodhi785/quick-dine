@@ -7,19 +7,17 @@ export default function MembershipSection() {
                 <div className="lg:col-span-7 h-[450px] overflow-hidden rounded-lg">
                     <img
                         src="/brohi-dastarkhwan.png"
-                        alt="Brohi family dastarkhwan spread - karahi, gola kabab and naan over live charcoal"
+                        alt="Velvet Table dining experiences - exceptional feasts and gatherings"
                         className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                     />
                 </div>
                 <div className="lg:col-span-5 flex flex-col justify-center lg:pl-6">
-                    <span className="text-[10px] text-secondary tracking-[0.2em] block mb-2 uppercase">✦ THE BROHI CLUB</span>
+                    <span className="text-[10px] text-secondary tracking-[0.2em] block mb-2 uppercase">✦ THE VELVET CIRCLE</span>
                     <h2 className="font-display text-3xl md:text-4xl text-primary mb-6 leading-tight">
-                        Gather the whole family, <span className="text-gradient-brand italic">dastarkhwan style</span>
+                        Gather your guests, <span className="text-gradient-brand italic">reserve with privilege</span>
                     </h2>
                     <p className="text-sm text-ink/65 mb-8 leading-relaxed">
-                        Join the Brohi Circle for a seat at the charcoal fire — priority family dastarkhwan
-                        seating at peak hours, held tables for large groups, and first invites to our weekly
-                        live-coal feast nights in Hyderabad.
+                        Join the Velvet Circle for priority bookings across partner restaurants — guaranteed prime table holds at peak hours, VIP seating for celebrations, and invitations to exclusive chef tastings.
                     </p>
 
                     <div className="space-y-4">

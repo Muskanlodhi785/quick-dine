@@ -21,7 +21,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
                     <ShieldAlert size={40} className="text-secondary mb-6" />
                     <h2 className="font-display text-2xl text-primary mb-3">Login to continue</h2>
                     <p className="text-sm text-ink/65 mb-8 leading-relaxed">
-                        Reservation booking and dashboard management are reserved exclusively for registered Brohi members.
+                        Reservation booking and dashboard management are reserved exclusively for registered Velvet Table members.
                     </p>
 
                     <div className="flex flex-col gap-3 w-full">

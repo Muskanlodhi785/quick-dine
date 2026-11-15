@@ -9,7 +9,7 @@ import { Table } from "../models/Table.js";
 import { Booking } from "../models/Booking.js";
 import { BookingLock } from "../models/BookingLock.js";
 
-const URI = process.env.TEST_MONGODB_URI || "mongodb://127.0.0.1:27017/quickdine_test";
+const URI = process.env.TEST_MONGODB_URI || "mongodb://127.0.0.1:27017/velvettable_test";
 
 const isoDaysFromNow = (days: number): string => {
   const d = new Date();
@@ -71,7 +71,7 @@ before(async () => {
     return res.body;
   };
 
-  const approved = await createVenue(ownerToken, `Brohi Test House ${suffix}`, ["18:00", "19:00", "20:00", "21:00"]);
+  const approved = await createVenue(ownerToken, `VT Test House ${suffix}`, ["18:00", "19:00", "20:00", "21:00"]);
   approvedId = approved._id;
   // Simulate the admin approval (admin panel is out of scope for this suite).
   await Restaurant.updateOne({ _id: approvedId }, { $set: { status: "approved" } });
@@ -191,4 +191,40 @@ test("an owner cannot touch another venue's data", async () => {
   // Owner 2 has a restaurant but no bookings; must be an empty array (200).
   assert.equal(owner2Bookings.status, 200);
   assert.equal(owner2Bookings.body.length, 0);
+});
+
+test("search filters by cuisine, location, and party size", async () => {
+  // Search by cuisine
+  const cuisineRes = await request(app).get("/api/restaurant?cuisine=BBQ");
+  assert.equal(cuisineRes.status, 200);
+  assert.ok(Array.isArray(cuisineRes.body));
+  assert.ok(cuisineRes.body.some((r: any) => r._id === approvedId));
+
+  // Search by location
+  const locRes = await request(app).get("/api/restaurant?location=Hyderabad");
+  assert.equal(locRes.status, 200);
+  assert.ok(Array.isArray(locRes.body));
+  assert.ok(locRes.body.some((r: any) => r._id === approvedId));
+
+  // Search by partySize
+  const partyRes = await request(app).get("/api/restaurant?partySize=2");
+  assert.equal(partyRes.status, 200);
+  assert.ok(Array.isArray(partyRes.body));
+  assert.ok(partyRes.body.some((r: any) => r._id === approvedId));
+});
+
+test("in-app notifications are received and can be marked as read", async () => {
+  const notifRes = await request(app)
+    .get("/api/notifications")
+    .set("Authorization", `Bearer ${ownerToken}`);
+  assert.equal(notifRes.status, 200);
+  assert.ok(Array.isArray(notifRes.body.notifications));
+  assert.ok(notifRes.body.notifications.length > 0);
+
+  const firstNotif = notifRes.body.notifications[0];
+  const readRes = await request(app)
+    .put(`/api/notifications/${firstNotif._id}/read`)
+    .set("Authorization", `Bearer ${ownerToken}`);
+  assert.equal(readRes.status, 200);
+  assert.equal(readRes.body.isRead, true);
 });

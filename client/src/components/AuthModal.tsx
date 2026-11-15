@@ -92,7 +92,7 @@ export default function AuthModal() {
                 <form onSubmit={handleSubmit} className="p-8 space-y-6 flex-1 flex flex-col justify-between">
                     <div>
                         <div className="text-center mb-8">
-                            <h2 className="font-display text-2xl font-medium text-primary tracking-tight">Welcome to Brohi</h2>
+                            <h2 className="font-display text-2xl font-medium text-primary tracking-tight">Welcome to Velvet Table</h2>
                             <p className="text-xs text-ink/65 mt-2 leading-relaxed">
                                 Access your exclusive reservations and curated dining profile.
                             </p>

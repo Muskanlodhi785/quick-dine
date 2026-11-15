@@ -8,6 +8,7 @@ import restaurantRouter from "./routes/restaurantRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import ownerRouter from "./routes/ownerRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
+import notificationRouter from "./routes/notificationRoutes.js";
 
 export const app = express();
 
@@ -53,7 +54,7 @@ if (process.env.NODE_ENV !== "production") {
 
 /* -------------------------------- routes ------------------------------- */
 app.get("/", (_req: Request, res: Response) => {
-  res.send("Brohi Dining API is live!");
+  res.send("Velvet Table API is live!");
 });
 
 app.use("/api/auth", authLimiter, authRouter);
@@ -61,6 +62,7 @@ app.use("/api/restaurant", restaurantRouter);
 app.use("/api/booking", bookingLimiter, bookingRouter);
 app.use("/api/owner", ownerRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/notifications", notificationRouter);
 
 /* ------------------------------ 404 + errors --------------------------- */
 app.use((_req: Request, res: Response) => {

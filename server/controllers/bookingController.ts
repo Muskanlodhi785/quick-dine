@@ -4,6 +4,9 @@ import { AuthRequest } from "../middlewares/auth.js";
 import { Restaurant } from "../models/Restaurant.js";
 import { Table } from "../models/Table.js";
 import { Booking } from "../models/Booking.js";
+import { User } from "../models/User.js";
+import { emitAvailabilityUpdated, emitBookingEvent } from "../utils/socket.js";
+import { createAndSendNotification } from "../utils/notifications.js";
 import {
   acquireTableLock,
   addMinutes,
@@ -143,6 +146,35 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
         { path: "restaurant", select: populateRestaurant },
         { path: "table", select: populateTable },
       ]);
+
+      emitAvailabilityUpdated(restaurant._id.toString(), date);
+      emitBookingEvent("booking_created", {
+        ...booking.toObject(),
+        restaurantId: restaurant._id,
+        userId: req.user?._id,
+      });
+
+      // Dispatch notification to venue owner (in-app + email)
+      void (async () => {
+        try {
+          const owner = await User.findById(restaurant.owner);
+          if (owner) {
+            await createAndSendNotification({
+              recipientId: owner._id.toString(),
+              recipientEmail: owner.email,
+              recipientName: owner.name,
+              senderId: req.user?._id?.toString(),
+              type: "booking_created",
+              title: "New Table Reservation",
+              message: `${req.user?.name || "A diner"} reserved Table ${table.tableNumber} for ${requestedParty} guests on ${date} at ${startTime}.`,
+              link: "/owner/dashboard",
+            });
+          }
+        } catch (e) {
+          console.error("Owner notification error:", e);
+        }
+      })();
+
       res.status(201).json(booking);
     } finally {
       await releaseTableLock(table._id, date);
@@ -187,6 +219,38 @@ export const cancelBooking = async (req: AuthRequest, res: Response): Promise<vo
       { path: "restaurant", select: populateRestaurant },
       { path: "table", select: populateTable },
     ]);
+
+    emitAvailabilityUpdated(booking.restaurant._id.toString(), booking.date);
+    emitBookingEvent("booking_cancelled", {
+      ...booking.toObject(),
+      restaurantId: booking.restaurant._id,
+      userId: booking.user,
+    });
+
+    // Notify owner
+    void (async () => {
+      try {
+        const rest = await Restaurant.findById(booking.restaurant);
+        if (rest) {
+          const owner = await User.findById(rest.owner);
+          if (owner) {
+            await createAndSendNotification({
+              recipientId: owner._id.toString(),
+              recipientEmail: owner.email,
+              recipientName: owner.name,
+              senderId: req.user?._id?.toString(),
+              type: "booking_cancelled",
+              title: "Reservation Cancelled by Guest",
+              message: `${req.user?.name || "A guest"} cancelled reservation ${booking.bookingId} for Table ${booking.table} on ${booking.date}.`,
+              link: "/owner/dashboard",
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Cancellation notification error:", e);
+      }
+    })();
+
     res.json(booking);
   } catch (error: any) {
     console.error(error);

@@ -10,6 +10,7 @@ import RestaurantReviews from "../components/restaurant/RestaurantReviews.tsx";
 import BookingWidget from "../components/restaurant/BookingWidget.tsx";
 import api from "../lib/api.ts";
 import { todayISO } from "../lib/format.ts";
+import { getSocket } from "../lib/socket.ts";
 
 export default function RestaurantDetail() {
     const { slug } = useParams<{ slug: string }>();
@@ -49,24 +50,69 @@ export default function RestaurantDetail() {
     useEffect(() => {
         if (!restaurant?._id || !selectedDate) return;
         const controller = new AbortController();
-        setLoadingSlots(true);
+        let active = true;
+
+        const loadAvailability = async () => {
+            try {
+                const res = await api.get(`/restaurant/${restaurant._id}/availability`, {
+                    params: { date: selectedDate, partySize: selectedGuests },
+                    signal: controller.signal,
+                });
+                if (active) {
+                    setSlotsAvailability(res.data);
+                    setLoadingSlots(false);
+                }
+            } catch (error: any) {
+                if (active && error?.code !== "ERR_CANCELED") {
+                    toast.error(error?.response?.data?.message || "Could not load availability");
+                    setLoadingSlots(false);
+                }
+            }
+        };
+
+        void loadAvailability();
+
+        return () => {
+            active = false;
+            controller.abort();
+        };
+    }, [restaurant?._id, selectedDate, selectedGuests]);
+
+    // Live Socket.io updates for table bookings & availability
+    useEffect(() => {
+        if (!restaurant?._id) return;
+        const socket = getSocket();
+        socket.emit("join_restaurant", restaurant._id);
+
+        const onAvailabilityUpdated = (data: { restaurantId: string; date: string }) => {
+            if (data.restaurantId === restaurant._id && data.date === selectedDate) {
+                api.get(`/restaurant/${restaurant._id}/availability`, {
+                    params: { date: selectedDate, partySize: selectedGuests },
+                })
+                    .then((res) => setSlotsAvailability(res.data))
+                    .catch(() => {});
+            }
+        };
+
+        socket.on("availability_updated", onAvailabilityUpdated);
+
+        return () => {
+            socket.emit("leave_restaurant", restaurant._id);
+            socket.off("availability_updated", onAvailabilityUpdated);
+        };
+    }, [restaurant?._id, selectedDate, selectedGuests]);
+
+    const handleDateChange = (date: string) => {
+        setSelectedDate(date);
         setSelectedSlot("");
         setSelectedTableId("");
+    };
 
-        api.get(`/restaurant/${restaurant._id}/availability`, {
-            params: { date: selectedDate, partySize: selectedGuests },
-            signal: controller.signal,
-        })
-            .then((res) => setSlotsAvailability(res.data))
-            .catch((error: any) => {
-                if (error?.code !== "ERR_CANCELED") {
-                    toast.error(error?.response?.data?.message || "Could not load availability");
-                }
-            })
-            .finally(() => setLoadingSlots(false));
-
-        return () => controller.abort();
-    }, [restaurant?._id, selectedDate, selectedGuests]);
+    const handleGuestsChange = (guests: string) => {
+        setSelectedGuests(guests);
+        setSelectedSlot("");
+        setSelectedTableId("");
+    };
 
     const selectSlot = useCallback(
         (slot: string) => {
@@ -121,9 +167,9 @@ export default function RestaurantDetail() {
                         <BookingWidget
                             restaurant={restaurant}
                             selectedDate={selectedDate}
-                            setSelectedDate={setSelectedDate}
+                            setSelectedDate={handleDateChange}
                             selectedGuests={selectedGuests}
-                            setSelectedGuests={setSelectedGuests}
+                            setSelectedGuests={handleGuestsChange}
                             selectedSlot={selectedSlot}
                             selectSlot={selectSlot}
                             selectedTableId={selectedTableId}

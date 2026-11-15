@@ -36,9 +36,9 @@ export default function Footer() {
 
                 {/* Contact */}
                 <div className="flex flex-col gap-3.5">
-                    <h4 className="text-xs font-bold tracking-widest text-secondary uppercase">Find Us</h4>
-                    <p className="text-sm text-ink/65 leading-relaxed">Auto Bhan Road, Latifabad, Hyderabad, Sindh</p>
-                    <p className="text-sm text-ink/65">reservations@brohirestaurant.pk</p>
+                    <h4 className="text-xs font-bold tracking-widest text-secondary uppercase">Contact</h4>
+                    <p className="text-sm text-ink/65 leading-relaxed">Partnering with premier restaurants across Pakistan</p>
+                    <p className="text-sm text-ink/65">hello@velvettable.pk</p>
                     <div className="flex gap-4 mt-2">
                         {socialLinks.map(({ icon: Icon, href }, index) => (
                             <a
@@ -58,7 +58,7 @@ export default function Footer() {
 
             {/* Bottom bar */}
             <div className="max-w-7xl mx-auto px-6 md:px-10 mt-14 pt-6 border-t border-outline-variant/50 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p className="text-xs text-ink/50">© 2026 Brohi Restaurant, Hyderabad. All rights reserved.</p>
+                <p className="text-xs text-ink/50">© 2026 Velvet Table Platform. All rights reserved.</p>
 
                 <div className="flex gap-6">
                     {bottomLinks.map((link) => (

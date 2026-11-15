@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Search, MapPin, Calendar, Users, ArrowRight, Flame } from "lucide-react";
 
 const GUEST_OPTIONS = [1, 2, 4, 6, 8];
-const SIGNATURES = ["Mutton Dampukht", "Brohi Chicken Gola Kabab", "Malai Boti", "Angara Fish"];
+const SIGNATURES = ["Mutton Dampukht", "Charcoal Karahi", "Malai Boti", "Angara Fish"];
 
 export default function Hero() {
     const navigate = useNavigate();
@@ -33,19 +33,18 @@ export default function Hero() {
                     <div className="flex items-center gap-3 fade-up">
                         <Flame size={16} className="text-terracotta" />
                         <p className="text-[11px] md:text-xs font-bold tracking-[0.3em] uppercase text-secondary">
-                            Charcoal BBQ · Hyderabad, Sindh
+                            Premier Dining Platform · Instant Booking
                         </p>
                     </div>
 
                     <h1 className="font-display text-[2.6rem] leading-[1.05] sm:text-6xl xl:text-[4.2rem] text-primary mt-5 tracking-tight fade-up" style={{ animationDelay: "0.06s" }}>
-                        Slow fire.
+                        Every table.
                         <br />
-                        <em className="text-gradient-brand not-italic font-semibold">True flavour.</em>
+                        <em className="text-gradient-brand not-italic font-semibold">In real time.</em>
                     </h1>
 
                     <p className="text-ink/80 text-base md:text-lg mt-6 max-w-md leading-relaxed fade-up" style={{ animationDelay: "0.12s" }}>
-                        Brohi Restaurant brings the mountains of Balochistan to Hyderabad — dampukht sealed overnight,
-                        karahi over open flame, and kababs you can taste the smoke in.
+                        Velvet Table connects you with the region's finest restaurants — from slow-fire Balochi charcoal and Sindhi dastarkhwans to modern rooftop grills, book your table in seconds.
                     </p>
 
                     {/* Signature chips */}
@@ -122,7 +121,7 @@ export default function Hero() {
                     <div className="relative rounded-t-[999px] rounded-b-3xl overflow-hidden border-[6px] border-raised shadow-2xl shadow-black/20 mx-auto max-w-md">
                         <img
                             src="/restaurant_1.png"
-                            alt="Charcoal BBQ platters at Brohi Restaurant"
+                            alt="Curated restaurant dining on Velvet Table"
                             className="w-full h-[430px] object-cover"
                         />
                         <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 via-black/25 to-transparent p-6 text-left">

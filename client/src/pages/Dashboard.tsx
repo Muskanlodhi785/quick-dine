@@ -7,6 +7,7 @@ import { CalendarDaysIcon, UsersIcon, MapPinIcon, Armchair } from "lucide-react"
 import toast from "react-hot-toast";
 import api from "../lib/api.ts";
 import { formatDateShort, formatTime12, todayISO } from "../lib/format.ts";
+import { getSocket } from "../lib/socket.ts";
 
 const STATUS_STYLES: Record<string, string> = {
     pending: "bg-amber-400/15 text-amber-300",
@@ -39,6 +40,21 @@ export default function Dashboard() {
 
         if (user) {
             fetchBookings();
+
+            const socket = getSocket();
+            socket.emit("join_user", user._id);
+
+            const onBookingChanged = () => {
+                fetchBookings();
+            };
+
+            socket.on("booking_updated", onBookingChanged);
+            socket.on("booking_cancelled", onBookingChanged);
+
+            return () => {
+                socket.off("booking_updated", onBookingChanged);
+                socket.off("booking_cancelled", onBookingChanged);
+            };
         }
     }, [user]);
 

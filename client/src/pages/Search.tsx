@@ -17,6 +17,7 @@ export default function Search() {
     // Filter states initialized from URL params
     const searchVal = searchParams.get("search") || "";
     const locationVal = searchParams.get("location") || "";
+    const partySizeVal = searchParams.get("partySize") || "";
     const cuisinesSelected = searchParams.getAll("cuisine");
     const pricesSelected = searchParams.getAll("priceRange");
     const sortVal = searchParams.get("sort") || "";
@@ -103,6 +104,16 @@ export default function Search() {
         setSearchParams(nextParams);
     };
 
+    const handlePartySizeChange = (size: string) => {
+        const nextParams = new URLSearchParams(searchParams);
+        if (size) {
+            nextParams.set("partySize", size);
+        } else {
+            nextParams.delete("partySize");
+        }
+        setSearchParams(nextParams);
+    };
+
     const clearAllFilters = () => {
         setSearchParams(new URLSearchParams());
         setTempSearch("");
@@ -110,7 +121,21 @@ export default function Search() {
     };
 
     const priceOptions = ["$", "$$", "$$$", "$$$$"];
-    const cuisineOptions = ["Italian", "French", "Japanese", "Steakhouse", "Vegetarian"];
+    const cuisineOptions = [
+        "BBQ & Balochi",
+        "Sindhi",
+        "Peshawari",
+        "Seafood",
+        "Continental",
+        "Tea & Sweets",
+    ];
+    const partySizeOptions = [
+        { label: "Any Size", value: "" },
+        { label: "2+ Guests", value: "2" },
+        { label: "4+ Guests", value: "4" },
+        { label: "6+ Guests", value: "6" },
+        { label: "8+ Guests", value: "8" },
+    ];
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-20">
@@ -171,6 +196,29 @@ export default function Search() {
                             >
                                 Clear All
                             </button>
+                        </div>
+
+                        {/* Party Size Filter */}
+                        <div className="space-y-3">
+                            <h4 className="text-xs font-medium text-primary tracking-wider uppercase">Party Size</h4>
+                            <div className="flex flex-wrap gap-1.5">
+                                {partySizeOptions.map((opt) => {
+                                    const active = partySizeVal === opt.value;
+                                    return (
+                                        <button
+                                            key={opt.label}
+                                            onClick={() => handlePartySizeChange(opt.value)}
+                                            className={`text-[11px] px-2.5 py-1.5 rounded-full border transition-colors cursor-pointer ${
+                                                active
+                                                    ? "bg-secondary text-white border-secondary"
+                                                    : "border-outline-variant/60 text-ink/65 hover:border-secondary hover:text-secondary"
+                                            }`}
+                                        >
+                                            {opt.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
 
                         {/* Cuisine Filter */}
@@ -311,6 +359,29 @@ export default function Search() {
                                                 >
                                                     {active && <Check size={10} />}
                                                 </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Mobile Party Size */}
+                            <div className="py-4 space-y-3 border-t border-outline-variant/10">
+                                <h4 className="text-xs font-medium text-primary tracking-wider uppercase">Party Size</h4>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {partySizeOptions.map((opt) => {
+                                        const active = partySizeVal === opt.value;
+                                        return (
+                                            <button
+                                                key={opt.label}
+                                                onClick={() => handlePartySizeChange(opt.value)}
+                                                className={`text-[11px] px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${
+                                                    active
+                                                        ? "bg-secondary text-white border-secondary"
+                                                        : "border-outline-variant/60 text-ink/65 hover:border-secondary hover:text-secondary"
+                                                }`}
+                                            >
+                                                {opt.label}
                                             </button>
                                         );
                                     })}

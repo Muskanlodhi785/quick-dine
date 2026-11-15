@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAppContext } from "../context/AppContext.tsx";
 import { Menu, X, LogOut, ShieldCheck, UserRound } from "lucide-react";
 import Brand from "./Brand.tsx";
+import NotificationBell from "./NotificationBell.tsx";
 
 export default function Navbar() {
     const { user, logout, setAuthModalOpen } = useAppContext();
@@ -13,16 +14,19 @@ export default function Navbar() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // Reset menus on route navigation during render to avoid cascading effects in React 19
+    const [prevPath, setPrevPath] = useState(location.pathname);
+    if (prevPath !== location.pathname) {
+        setPrevPath(location.pathname);
+        if (mobileMenuOpen) setMobileMenuOpen(false);
+        if (dropdownOpen) setDropdownOpen(false);
+    }
+
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 24);
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-
-    useEffect(() => {
-        setMobileMenuOpen(false);
-        setDropdownOpen(false);
-    }, [location]);
 
     useEffect(() => {
         if (!dropdownOpen) return;
@@ -52,7 +56,7 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto flex justify-between items-center h-full px-6 md:px-10">
                 {/* Brand + links */}
                 <div className="flex items-center gap-12">
-                    <Link to="/" aria-label="Brohi Restaurant Hyderabad — home">
+                    <Link to="/" aria-label="Velvet Table — home">
                         <Brand />
                     </Link>
 
@@ -81,6 +85,7 @@ export default function Navbar() {
 
                 {/* Auth actions (desktop) */}
                 <div className="hidden md:flex items-center gap-6">
+                    {user && <NotificationBell />}
                     {user ? (
                         <div className="relative">
                             <button
@@ -157,7 +162,9 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile menu button */}
-                <div className="flex items-center md:hidden">
+                {/* Mobile hamburger & notifications */}
+                <div className="flex items-center gap-2 md:hidden">
+                    {user && <NotificationBell />}
                     <button
                         onClick={() => setMobileMenuOpen((v) => !v)}
                         className={`p-2 transition-colors cursor-pointer ${mobileMenuOpen ? "text-secondary" : "text-primary"}`}

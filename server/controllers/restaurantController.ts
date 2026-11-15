@@ -18,15 +18,26 @@ const PRICE_RANGES = ["$", "$$", "$$$", "$$$$"];
 
 export const getRestaurants = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { search, priceRange, rating, location, sort } = req.query;
+    const { search, priceRange, rating, location, cuisine, partySize, sort } = req.query;
     const queryObj: Record<string, unknown> = { status: "approved" };
 
     if (search) {
       queryObj.$or = [
         { name: { $regex: search, $options: "i" } },
+        { cuisine: { $regex: search, $options: "i" } },
         { tags: { $regex: search, $options: "i" } },
         { location: { $regex: search, $options: "i" } },
       ];
+    }
+    if (cuisine) {
+      const list = Array.isArray(cuisine)
+        ? cuisine.map(String).filter(Boolean)
+        : typeof cuisine === "string"
+          ? cuisine.split(",").map((c) => c.trim()).filter(Boolean)
+          : [];
+      if (list.length) {
+        queryObj.cuisine = { $in: list.map((c) => new RegExp(c, "i")) };
+      }
     }
     if (priceRange) {
       const prices = Array.isArray(priceRange)
@@ -42,6 +53,16 @@ export const getRestaurants = async (req: Request, res: Response): Promise<void>
     }
     if (location) {
       queryObj.location = { $regex: location, $options: "i" };
+    }
+    if (partySize) {
+      const partyNum = parseInt(String(partySize), 10);
+      if (!Number.isNaN(partyNum) && partyNum > 0) {
+        const venuesWithCapacity = await Table.distinct("restaurant", {
+          isActive: true,
+          capacity: { $gte: partyNum },
+        });
+        queryObj._id = { $in: venuesWithCapacity };
+      }
     }
 
     let sortOption: Record<string, 1 | -1> = { createdAt: -1 };

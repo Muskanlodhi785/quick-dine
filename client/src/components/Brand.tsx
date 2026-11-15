@@ -4,17 +4,17 @@ interface BrandProps {
     className?: string;
 }
 
-/** Brohi Restaurant wordmark — Fraunces serif + Ajrak-maroon dot. */
+/** Velvet Table platform wordmark — Fraunces serif + warm gold dot. */
 export default function Brand({ size = "text-2xl", className = "" }: BrandProps) {
     return (
         <span className={`inline-flex items-center select-none ${className}`}>
             <span className={`font-display font-semibold tracking-tight text-primary leading-none ${size}`}>
-                Brohi
+                Velvet Table
             </span>
             <span className={`text-secondary leading-none mx-[3px] ${size}`}>•</span>
             <span className="hidden sm:inline-flex flex-col justify-center leading-none gap-[3px]">
-                <span className="text-[8px] font-bold tracking-[0.32em] uppercase text-secondary">Restaurant</span>
-                <span className="text-[8px] font-semibold tracking-[0.3em] uppercase text-ink/45">Hyderabad</span>
+                <span className="text-[8px] font-bold tracking-[0.32em] uppercase text-secondary">Platform</span>
+                <span className="text-[8px] font-semibold tracking-[0.3em] uppercase text-ink/45">Dining</span>
             </span>
         </span>
     );

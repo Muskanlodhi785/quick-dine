@@ -9,7 +9,11 @@ export interface IRestaurant extends Document{
     reviews: number
     location: string
     address: string
+    phone?: string
+    openingTime?: string
+    closingTime?: string
     image: string
+    imageUrl?: string
     imagePublicId: string
     chef: string
     tags: string[]
@@ -17,6 +21,7 @@ export interface IRestaurant extends Document{
     featured: boolean
     exclusive: boolean
     owner: Types.ObjectId
+    ownerId?: Types.ObjectId
     status: 'pending' | 'approved' | 'rejected'
     totalSeats: number,
     createdAt: Date
@@ -70,6 +75,19 @@ const restaurantSchema = new Schema <IRestaurant>(
       type: String,
       required: true
     },
+    phone: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    openingTime: {
+      type: String,
+      default: "12:00"
+    },
+    closingTime: {
+      type: String,
+      default: "23:00"
+    },
     image: {
       type: String,
       default: ""
@@ -112,9 +130,19 @@ const restaurantSchema = new Schema <IRestaurant>(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 )
+
+restaurantSchema.virtual('imageUrl').get(function (this: IRestaurant) {
+  return this.image;
+});
+
+restaurantSchema.virtual('ownerId').get(function (this: IRestaurant) {
+  return this.owner;
+});
 
 
 restaurantSchema.index({ owner: 1 });

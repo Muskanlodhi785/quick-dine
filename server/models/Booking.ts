@@ -5,9 +5,13 @@ export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
 
 export interface IBooking extends Document {
   user: Types.ObjectId;
+  customerId?: Types.ObjectId;
   restaurant: Types.ObjectId;
+  restaurantId?: Types.ObjectId;
   table: Types.ObjectId;
+  tableId?: Types.ObjectId;
   date: string; // "YYYY-MM-DD" (local day, timezone-safe)
+  bookingDate?: string;
   startTime: string; // "HH:mm" (24h)
   endTime: string; // "HH:mm" (24h)
   partySize: number;
@@ -70,8 +74,28 @@ const bookingSchema = new Schema<IBooking>(
       unique: true,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+bookingSchema.virtual("customerId").get(function (this: IBooking) {
+  return this.user;
+});
+
+bookingSchema.virtual("restaurantId").get(function (this: IBooking) {
+  return this.restaurant;
+});
+
+bookingSchema.virtual("tableId").get(function (this: IBooking) {
+  return this.table;
+});
+
+bookingSchema.virtual("bookingDate").get(function (this: IBooking) {
+  return this.date;
+});
 
 // Speeds up conflict queries: active bookings for a table on a day.
 bookingSchema.index({ table: 1, date: 1, status: 1, startTime: 1 });

@@ -53,7 +53,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       name,
       email: String(email).toLowerCase(),
       password: hashedPassword,
-      phone,
+      ...(phone ? { phone } : {}),
       role,
     });
 

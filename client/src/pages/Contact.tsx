@@ -2,10 +2,10 @@
 import { MapPin, Phone, Clock, Mail, ArrowRight } from "lucide-react";
 
 const DETAILS = [
-    { icon: MapPin, label: "Address", value: "Auto Bhan Road, Latifabad, Hyderabad, Sindh" },
-    { icon: Phone, label: "Reservations", value: "+92 300 1234567 (12 PM – 11 PM)" },
-    { icon: Mail, label: "Email", value: "reservations@brohirestaurant.pk" },
-    { icon: Clock, label: "Hours", value: "Daily 12 PM – 1 AM · Dampukht from 6 PM" },
+    { icon: MapPin, label: "Headquarters", value: "Auto Bhan Road, Latifabad, Hyderabad, Sindh" },
+    { icon: Phone, label: "Concierge & Support", value: "+92 300 1234567 (10 AM – 11 PM)" },
+    { icon: Mail, label: "Partner & Inquiries", value: "hello@velvettable.pk" },
+    { icon: Clock, label: "Platform Availability", value: "24/7 Real-Time Online Booking" },
 ];
 
 export default function Contact() {
@@ -44,7 +44,7 @@ export default function Contact() {
                         ))}
 
                         <a
-                            href="https://www.google.com/maps/search/?api=1&query=Latifabad+Hyderabad+Sindh+Brohi+Restaurant"
+                            href="https://www.google.com/maps/search/?api=1&query=Latifabad+Hyderabad+Sindh"
                             target="_blank"
                             rel="noreferrer"
                             className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-secondary hover:text-primary transition-colors"

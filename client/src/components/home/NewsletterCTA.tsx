@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 export default function NewsletterCTA() {
     const handleSubscribe = (e: React.FormEvent) => {
         e.preventDefault();
-        toast.success("Thank you for joining the Brohi Circle!");
+        toast.success("Thank you for joining the Velvet Circle!");
     };
 
     return (
@@ -12,7 +12,7 @@ export default function NewsletterCTA() {
             <span className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full bg-honey/20 blur-2xl" aria-hidden />
             <span className="pointer-events-none absolute -bottom-14 -right-10 w-48 h-48 rounded-full bg-leaf/25 blur-2xl" aria-hidden />
             <div className="relative max-w-2xl mx-auto px-6">
-                <span className="text-honey tracking-[0.35em] text-[10px] font-semibold uppercase">✦ Brohi Circle ✦</span>
+                <span className="text-honey tracking-[0.35em] text-[10px] font-semibold uppercase">✦ Velvet Circle ✦</span>
                 <h2 className="font-display text-3xl md:text-4xl mt-3">
                     Join the Culinary Circle
                 </h2>

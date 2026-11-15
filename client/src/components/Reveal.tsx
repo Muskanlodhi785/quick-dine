@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type ElementType } from "react";
 
 interface RevealProps {
     children: ReactNode;
     /** Stagger delay in ms */
     delay?: number;
     className?: string;
-    as?: "div" | "section" | "li";
+    as?: ElementType;
 }
 
 /** Fade-up on scroll into view (IntersectionObserver). */
@@ -31,7 +31,7 @@ export default function Reveal({ children, delay = 0, className = "", as = "div"
         return () => observer.disconnect();
     }, []);
 
-    const Tag = as as any;
+    const Tag = as;
     return (
         <Tag
             ref={ref}

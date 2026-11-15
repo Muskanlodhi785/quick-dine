@@ -38,8 +38,30 @@ export default function AiPicks() {
     };
 
     useEffect(() => {
-        void load();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        let active = true;
+        const fetchPicks = async () => {
+            try {
+                const params: any = { partySize: party, limit: 3 };
+                if (VIBES[vibe].query) params.preference = VIBES[vibe].query;
+                const response = await api.get("/restaurant/recommend", { params });
+                if (!active) return;
+                const items = response.data?.recommendations;
+                setSource(response.data?.source || "");
+                setPicks(Array.isArray(items) ? items : []);
+            } catch {
+                if (!active) return;
+                setPicks([]);
+                setSource("");
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+
+        void fetchPicks();
+
+        return () => {
+            active = false;
+        };
     }, [party, vibe]);
 
     return (
@@ -48,7 +70,7 @@ export default function AiPicks() {
                 <div className="flex flex-wrap items-end justify-between gap-4 mb-2">
                     <div>
                         <span className="text-[10px] text-secondary tracking-[0.2em] uppercase flex items-center gap-1.5">
-                            <Sparkles size={12} /> Ask Brohi AI
+                            <Sparkles size={12} /> Ask Velvet AI
                         </span>
                         <h3 className="font-display text-2xl md:text-3xl text-primary mt-2">
                             Gemini picks for <span className="text-gradient-brand italic">tonight</span>

@@ -61,12 +61,12 @@ export const AppContextProvider = ({ children }: Props) => {
     const register = async (name: string, email: string, password: string, phone?: string, role?: string): Promise<boolean> => {
          try{
         setLoading(true);
-        const res = await api.post("/auth/register", {name, phone, role, email, password });
+        const res = await api.post("/auth/register", {name, phone: phone || undefined, role, email, password });
         const { token : userToken, ...userData} = res.data;
         localStorage.setItem("token", userToken);
         setToken(userToken);
         setUser(userData);
-        toast.success(`welcome to Brohi Club`);
+        toast.success(`Welcome to Velvet Table!`);
         return true;
        }
       catch (error: any) {

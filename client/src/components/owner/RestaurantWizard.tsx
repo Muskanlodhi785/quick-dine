@@ -17,6 +17,9 @@ export default function RestaurantWizard({ setRestaurant }: RestaurantWizardProp
     const [location, setLocation] = useState("");
     const [address, setAddress] = useState("");
     const [chef, setChef] = useState("");
+    const [phone, setPhone] = useState("");
+    const [openingTime, setOpeningTime] = useState("12:00");
+    const [closingTime, setClosingTime] = useState("23:00");
     const [tags, setTags] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>("");
@@ -79,6 +82,9 @@ export default function RestaurantWizard({ setRestaurant }: RestaurantWizardProp
             formData.append("location", location);
             formData.append("address", address);
             formData.append("chef", chef);
+            formData.append("phone", phone);
+            formData.append("openingTime", openingTime);
+            formData.append("closingTime", closingTime);
             formData.append("tags", tags);
             formData.append("availableSlots", availableSlots.join(","));
             formData.append("totalSeats", totalSeats);
@@ -176,6 +182,37 @@ console.log(res.data)
                             </label>
                             {imageFile && <span className="block text-[10px] text-secondary font-medium">Selected: {imageFile.name}</span>}
                         </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Contact Phone</label>
+                        <input
+                            type="text"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="e.g. +92 22 3812345"
+                            className="w-full bg-surface-container-low/30 border border-outline-variant/40 px-3 py-2.5 text-xs focus:border-secondary focus:outline-none rounded-sm"
+                        />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Opening Time</label>
+                        <input
+                            type="time"
+                            value={openingTime}
+                            onChange={(e) => setOpeningTime(e.target.value)}
+                            className="w-full bg-surface-container-low/30 border border-outline-variant/40 px-3 py-2.5 text-xs focus:border-secondary focus:outline-none rounded-sm"
+                        />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Closing Time</label>
+                        <input
+                            type="time"
+                            value={closingTime}
+                            onChange={(e) => setClosingTime(e.target.value)}
+                            className="w-full bg-surface-container-low/30 border border-outline-variant/40 px-3 py-2.5 text-xs focus:border-secondary focus:outline-none rounded-sm"
+                        />
                     </div>
                 </div>
 

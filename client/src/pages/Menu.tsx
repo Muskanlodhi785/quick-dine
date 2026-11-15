@@ -17,9 +17,9 @@ interface MenuSection {
 const SECTIONS: MenuSection[] = [
     {
         title: "From the Fire",
-        note: "Everything below is cooked over live charcoal — the Brohi way.",
+        note: "Charcoal grill specialties featured across top venue menus.",
         items: [
-            { name: "Brohi Chicken Gola Kabab", desc: "Hand-pounded chicken seekh, smoked over embers", price: "Rs. 750", tag: "Signature" },
+            { name: "Smoked Chicken Gola Kabab", desc: "Hand-pounded chicken seekh, smoked over embers", price: "Rs. 750", tag: "Signature" },
             { name: "Malai Boti", desc: "Cream-marinated thigh, saffron & green chilli", price: "Rs. 950" },
             { name: "Chicken Angara", desc: "Fiery charcoal finish, ghee-laced masala", price: "Rs. 1,150" },
             { name: "Fish Angara", desc: "Whole river fish, charred skin, tamarind glaze", price: "Rs. 1,400" },

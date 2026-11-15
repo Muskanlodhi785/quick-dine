@@ -3,8 +3,11 @@ import { AuthRequest } from "../middlewares/auth.js";
 import { Restaurant } from "../models/Restaurant.js";
 import { Table } from "../models/Table.js";
 import { Booking, BookingStatus } from "../models/Booking.js";
+import { User } from "../models/User.js";
 import { v2 as cloudinary } from "cloudinary";
 import { cloudinaryReady } from "../config/cloudinary.js";
+import { emitAvailabilityUpdated, emitBookingEvent } from "../utils/socket.js";
+import { createAndSendNotification } from "../utils/notifications.js";
 
 /* ------------------------------ cloudinary io ------------------------------ */
 
@@ -13,7 +16,7 @@ const uploadToCloudinary = (
 ): Promise<{ secure_url: string; public_id: string }> =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: "quickdine" },
+      { folder: "velvettable" },
       (error, result) => {
         if (error) {
           reject(error);
@@ -76,7 +79,7 @@ export const createOwnerRestaurant = async (req: AuthRequest, res: Response): Pr
       return;
     }
 
-    const { name, description, cuisine, priceRange, location, address, chef } = req.body;
+    const { name, description, cuisine, priceRange, location, address, chef, phone, openingTime, closingTime } = req.body;
     if (!name || !description || !cuisine || !priceRange || !location || !address || !chef) {
       res.status(400).json({ message: "Please fill all the required fields" });
       return;
@@ -110,6 +113,9 @@ export const createOwnerRestaurant = async (req: AuthRequest, res: Response): Pr
       priceRange,
       location: String(location).trim(),
       address: String(address).trim(),
+      phone: phone ? String(phone).trim() : "",
+      openingTime: openingTime ? String(openingTime).trim() : "12:00",
+      closingTime: closingTime ? String(closingTime).trim() : "23:00",
       chef: String(chef).trim(),
       image,
       imagePublicId,
@@ -137,7 +143,7 @@ export const updateOwnerRestaurant = async (req: AuthRequest, res: Response): Pr
       return;
     }
 
-    const { name, description, cuisine, priceRange, location, address, chef } = req.body;
+    const { name, description, cuisine, priceRange, location, address, chef, phone, openingTime, closingTime } = req.body;
     if (name) restaurant.name = String(name).trim();
     if (description) restaurant.description = String(description).trim();
     if (cuisine) restaurant.cuisine = String(cuisine).trim();
@@ -145,6 +151,9 @@ export const updateOwnerRestaurant = async (req: AuthRequest, res: Response): Pr
     if (location) restaurant.location = String(location).trim();
     if (address) restaurant.address = String(address).trim();
     if (chef) restaurant.chef = String(chef).trim();
+    if (phone !== undefined) restaurant.phone = String(phone).trim();
+    if (openingTime !== undefined) restaurant.openingTime = String(openingTime).trim();
+    if (closingTime !== undefined) restaurant.closingTime = String(closingTime).trim();
 
     const tags = parseListField(req.body.tags);
     if (tags.length) restaurant.tags = tags;
@@ -377,6 +386,38 @@ export const updateBookingStatus = async (req: AuthRequest, res: Response): Prom
     booking.status = next;
     await booking.save();
     await booking.populate([{ path: "table", select: "tableNumber capacity" }]);
+
+    emitAvailabilityUpdated(restaurant._id.toString(), booking.date);
+    emitBookingEvent("booking_updated", {
+      ...booking.toObject(),
+      restaurantId: restaurant._id,
+      userId: booking.user,
+    });
+
+    // Dispatch notification to customer (in-app + email)
+    void (async () => {
+      try {
+        const customer = await User.findById(booking.user);
+        if (customer) {
+          const isConfirmed = next === "confirmed";
+          await createAndSendNotification({
+            recipientId: customer._id.toString(),
+            recipientEmail: customer.email,
+            recipientName: customer.name,
+            senderId: req.user?._id?.toString(),
+            type: isConfirmed ? "booking_confirmed" : "booking_cancelled",
+            title: isConfirmed ? "Reservation Confirmed! 🎉" : `Reservation ${next}`,
+            message: isConfirmed
+              ? `Great news! ${restaurant.name} confirmed your reservation ${booking.bookingId} for ${booking.partySize} guests on ${booking.date} at ${booking.startTime}.`
+              : `Your reservation ${booking.bookingId} at ${restaurant.name} for ${booking.date} has been marked ${next}.`,
+            link: "/dashboard",
+          });
+        }
+      } catch (e) {
+        console.error("Customer notification error:", e);
+      }
+    })();
+
     res.json(booking);
   } catch (error: any) {
     console.error(error);

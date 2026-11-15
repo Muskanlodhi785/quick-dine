@@ -11,6 +11,7 @@ import OwnerTables from "../../components/owner/OwnerTables.tsx";
 import OwnerProfileDetails from "../../components/owner/OwnerProfileDetails.tsx";
 import api from "../../lib/api.ts";
 import toast from "react-hot-toast";
+import { getSocket } from "../../lib/socket.ts";
 
 export default function OwnerDashboard() {
     const { logout } = useAppContext();
@@ -22,7 +23,6 @@ export default function OwnerDashboard() {
 
     const fetchOwnerData = useCallback(async () => {
         try {
-            setLoading(true);
             const res = await api.get("/owner/restaurants");
             setRestaurant(res.data);
             if (res.data && res.data.status === "approved") {
@@ -46,8 +46,62 @@ export default function OwnerDashboard() {
     }, []);
 
     useEffect(() => {
-        void fetchOwnerData();
-    }, [fetchOwnerData]);
+        let active = true;
+        const run = async () => {
+            try {
+                const res = await api.get("/owner/restaurants");
+                if (!active) return;
+                setRestaurant(res.data);
+                if (res.data && res.data.status === "approved") {
+                    const [bookingsRes, tablesRes] = await Promise.all([
+                        api.get("/owner/bookings"),
+                        api.get("/owner/tables"),
+                    ]);
+                    if (!active) return;
+                    setBookings(bookingsRes.data);
+                    setTables(tablesRes.data);
+                }
+            } catch (error: any) {
+                if (!active) return;
+                const message = error?.response?.data?.message || error.message;
+                if (error?.response?.status !== 404) {
+                    toast.error(message);
+                }
+                setRestaurant(null);
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+        void run();
+        return () => { active = false; };
+    }, []);
+
+    // Socket.io real-time updates for bookings & tables
+    useEffect(() => {
+        if (!restaurant?._id) return;
+        const socket = getSocket();
+        socket.emit("join_restaurant", restaurant._id);
+
+        const onBookingCreated = (booking: any) => {
+            toast.success(`New reservation received for Table ${booking.table?.tableNumber || ""}`);
+            api.get("/owner/bookings").then((res) => setBookings(res.data)).catch(() => {});
+        };
+
+        const onBookingUpdated = () => {
+            api.get("/owner/bookings").then((res) => setBookings(res.data)).catch(() => {});
+        };
+
+        socket.on("booking_created", onBookingCreated);
+        socket.on("booking_updated", onBookingUpdated);
+        socket.on("booking_cancelled", onBookingUpdated);
+
+        return () => {
+            socket.emit("leave_restaurant", restaurant._id);
+            socket.off("booking_created", onBookingCreated);
+            socket.off("booking_updated", onBookingUpdated);
+            socket.off("booking_cancelled", onBookingUpdated);
+        };
+    }, [restaurant?._id]);
 
     // Keep the panel fresh if the admin approves the listing while this tab is open.
     useEffect(() => {

@@ -3,6 +3,7 @@ export interface IUser extends Document{
     name: string
     email: string
     password: string
+    passwordHash?: string
     phone?: string
     role: 'user' | 'admin' | 'owner'
     createdAt: Date
@@ -44,7 +45,12 @@ const userSchema = new Schema <IUser>(
   }
 )
 
+userSchema.virtual('passwordHash').get(function (this: IUser) {
+  return this.password;
+});
+
 userSchema.set('toJSON', {
+    virtuals: true,
     transform: (doc, ret) => {
         delete (ret as Partial<IUser>).password;
         return ret
