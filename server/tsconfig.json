@@ -1,8 +1,8 @@
-git branch -M main{
+{
     "compilerOptions": {
         "target": "ES2020",
         "module": "nodenext",
-        "moduleResolution":"nodenext",
+        "moduleResolution": "nodenext",
         "outDir": "./dist",
         "rootDir": "./",
         "strict": true,
@@ -14,6 +14,7 @@ git branch -M main{
         "./**/*.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "dist"
     ]
 }

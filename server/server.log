@@ -1,0 +1,111 @@
+
+> server@1.0.0 start
+> tsx server.ts
+
+MongoDB connected successfully
+Brohi Dining server running at http://localhost:5000
+GET /api/restaurant/recommend?partySize=4&preference=karahi%20for%20dinner&limit=3
+GET /api/restaurant/recommend?partySize=4&preference=seafood%20near%20the%20river&limit=3
+GET /api/restaurant/recommend?partySize=4&preference=romantic%20candlelight&limit=3
+GET /api/restaurant?
+GET /api/restaurant/featured
+POST /api/auth/register
+GET /api/auth/me
+GET /api/restaurant/recommend?preference=romantic+premium+dining&partySize=2&limit=3
+GET /api/booking/my
+GET /api/restaurant?
+GET /api/restaurant/gul-rang-chai
+GET /api/restaurant/6aa16aea6b53f0156ade48d9/availability?date=2026-09-09&partySize=2
+GET /api/restaurant/featured
+GET /api/restaurant/brohi-restaurant
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-09&partySize=2
+GET /api/restaurant/brohi-restaurant
+GET /api/auth/me
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-09&partySize=2
+GET /api/restaurant/featured
+GET /api/restaurant/featured
+GET /api/restaurant/featured
+GET /api/restaurant/brohi-restaurant
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-10&partySize=2
+GET /api/restaurant/featured
+GET /api/restaurant/brohi-restaurant
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-10&partySize=2
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-15&partySize=4
+POST /api/auth/login
+GET /api/booking/my
+GET /api/restaurant/recommend?preference=romantic+premium+dining&partySize=2&limit=3
+GET /api/auth/me
+GET /api/booking/my
+GET /api/restaurant/featured
+GET /api/auth/me
+GET /api/restaurant/brohi-restaurant
+GET /api/auth/me
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-10&partySize=2
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-15&partySize=4
+GET /api/restaurant?
+GET /api/restaurant/featured
+GET /api/restaurant/featured
+GET /api/auth/me
+GET /api/restaurant/featured
+GET /api/auth/me
+GET /api/restaurant/brohi-restaurant
+GET /api/auth/me
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-10&partySize=2
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-10&partySize=4
+GET /api/restaurant/6aa16ae96b53f0156ade48a2/availability?date=2026-09-17&partySize=4
+GET /api/restaurant/featured
+GET /api/restaurant?
+GET /api/restaurant/sindh-dastarkhwan
+GET /api/restaurant/6aa16aea6b53f0156ade48ad/availability?date=2026-09-10&partySize=2
+GET /api/restaurant/featured
+GET /api/auth/me
+GET /api/booking/my
+GET /api/restaurant/recommend?limit=3
+GET /api/restaurant/featured
+GET /api/auth/me
+GET /api/restaurant/recommend?partySize=4&limit=3
+GET /api/restaurant/featured
+GET /api/restaurant/recommend?partySize=4&limit=3
+GET /api/restaurant/featured
+GET /api/auth/me
+GET /api/restaurant/recommend?partySize=4&limit=3&preference=seafood+river+fish
+GET /api/restaurant/recommend?partySize=4&limit=3&preference=seafood+river+fish
+GET /api/restaurant/recommend?partySize=4&limit=3
+GET /api/restaurant/recommend?partySize=4&limit=3
+GET /api/restaurant/featured
+GET /api/auth/me
+GET /api/restaurant/recommend?partySize=4&limit=3&preference=family+bbq
+GET /api/restaurant/recommend?partySize=4&limit=3&preference=karahi+dampukht
+GET /api/restaurant/recommend?partySize=4&limit=3&preference=chai+sweets+dessert
+GET /api/restaurant/recommend?partySize=4&limit=3
+Gemini recommendation failed: Error: Gemini API error 429
+    at askGemini (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:233:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async recommendRestaurants (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:341:21)
+Gemini recommendation failed: Error: Gemini API error 429
+    at askGemini (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:233:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async recommendRestaurants (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:341:21)
+Gemini recommendation failed: Error: Gemini API error 429
+    at askGemini (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:233:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async recommendRestaurants (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:341:21)
+GET /api/restaurant?
+GET /api/restaurant/recommend?partySize=4&limit=3
+GET /api/restaurant/featured
+Gemini recommendation failed: Error: Gemini API error 429
+    at askGemini (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:233:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async recommendRestaurants (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:341:21)
+GET /api/restaurant/recommend?partySize=6&limit=3
+Gemini recommendation failed: Error: Gemini API error 429
+    at askGemini (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:233:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async recommendRestaurants (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:341:21)
+GET /api/restaurant?
+GET /api/restaurant/featured
+GET /api/restaurant/recommend?partySize=4&limit=3
+Gemini recommendation failed: Error: Gemini API error 429
+    at askGemini (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:233:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async recommendRestaurants (C:\Users\HP\Music\QuickDine\server\controllers\restaurantController.ts:341:21)
