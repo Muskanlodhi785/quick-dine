@@ -1,2 +1,36 @@
-node_modules
+﻿# Dependencies
+node_modules/
+
+# Builds
+dist/
+build/
+
+# Environment variables - never commit real secrets
 .env
+.env.local
+.env.production
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
+
+# QA screenshots
+qa/
+
+# QA artifacts
+qa_*
+
+# QA artifacts
+shots/
+
+# generated image staging
+media-output/
+
+# root QA screenshots
+/*.png

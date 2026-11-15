@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import Navbar from "../../components/Navbar.tsx";
-import Footer from "../../components/Footer.tsx";
 import Loader from "../../components/Loader.tsx";
 import { useAppContext } from "../../context/AppContext.tsx";
 import { ShieldCheckIcon, CheckCircleIcon, BarChart3Icon } from "lucide-react";
@@ -72,7 +70,6 @@ export default function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-20">
-            <Navbar />
 
             <main className="grow max-w-7xl w-full mx-auto px-6 md:px-10 py-12">
                 {/* Heading */}
@@ -81,7 +78,7 @@ export default function AdminDashboard() {
                         <h1 className="font-display text-2xl md:text-3xl font-medium text-primary flex items-center gap-2">
                             <ShieldCheckIcon size={28} className="text-secondary" /> Admin Console
                         </h1>
-                        <p className="text-xs text-black/55 mt-1.5">
+                        <p className="text-xs text-ink/65 mt-1.5">
                             Approve new restaurant partners, audit active slots listings, and review platform booking metrics.
                         </p>
                     </div>
@@ -95,12 +92,12 @@ export default function AdminDashboard() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                     {/* Tab Navigation Sidebar */}
-                    <aside className="lg:col-span-3 space-y-6 bg-white border border-outline-variant/20 p-6 rounded-md shadow-sm h-fit">
+                    <aside className="lg:col-span-3 space-y-6 bg-raised border border-outline-variant/20 p-6 rounded-md shadow-sm h-fit">
                         <nav className="flex flex-col gap-1.5">
                             <button
                                 onClick={() => setActiveTab("approvals")}
                                 className={`w-full flex items-center gap-3 px-4 py-3 text-xs font-medium tracking-wider uppercase text-left rounded-sm cursor-pointer transition-colors ${
-                                    activeTab === "approvals" ? "bg-primary text-white" : "text-black/55 hover:bg-surface"
+                                    activeTab === "approvals" ? "bg-primary text-on-primary" : "text-ink/65 hover:bg-surface"
                                 }`}
                             >
                                 <CheckCircleIcon size={14} />
@@ -109,7 +106,7 @@ export default function AdminDashboard() {
                             <button
                                 onClick={() => setActiveTab("stats")}
                                 className={`w-full flex items-center gap-3 px-4 py-3 text-xs font-medium tracking-wider uppercase text-left rounded-sm cursor-pointer transition-colors ${
-                                    activeTab === "stats" ? "bg-primary text-white" : "text-black/55 hover:bg-surface"
+                                    activeTab === "stats" ? "bg-primary text-on-primary" : "text-ink/65 hover:bg-surface"
                                 }`}
                             >
                                 <BarChart3Icon size={14} />
@@ -136,7 +133,6 @@ export default function AdminDashboard() {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 }

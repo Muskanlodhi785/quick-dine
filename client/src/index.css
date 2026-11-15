@@ -1,36 +1,71 @@
 @import "tailwindcss";
 
 @theme {
-  --color-surface: #f9f9f9;
+  /* ── Brohi "Flame" palette (light) ─────────────────────
+     Clean white canvas, flame orange-red brand color,
+     leaf-green + honey-yellow accents. Ink text. */
+  --color-surface: #ffffff;
+  --color-paper: #fffdf9;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f3f3f4;
-  --color-on-surface: #1a1c1c;
-  --color-outline-variant: #c4c7c7;
-  --color-primary: #000000;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #1c1b1b;
-  --color-on-primary-container: #858383;
-  --color-secondary: #775a19;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #fed488;
-  --color-on-secondary-container: #785a1a;
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  --color-surface-container-low: #faf5eb;
+  --color-surface-container-high: #f1e7d4;
+  --color-raised: #ffffff;
+  --color-on-surface: #2a2118;
+  --color-ink: #2a2118;
+  --color-outline-variant: #e8dfd0;
 
-  /* Fonts */
-  --font-display: "Playfair Display", serif;
-  --font-body: "Outfit", sans-serif;
+  --color-primary: #c2410c;        /* flame orange-red — brand & CTAs */
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ffdcc2; /* soft peach fills */
+  --color-on-primary-container: #772304;
+
+  --color-secondary: #2f7d32;      /* leaf green — accents */
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #d9efd8;
+  --color-on-secondary-container: #0d4a16;
+
+  --color-flame: #d6450c;
+  --color-leaf: #2f7d32;
+  --color-honey: #f4a300;
+  --color-terracotta: #e07b39;
+  --color-gold: #f4a300;
+  --color-cream: #fffaf0;
+
+  --color-error: #b3261e;
+  --color-on-error: #ffffff;
+  --color-error-container: #f9dedc;
+  --color-on-error-container: #410e0b;
+
+  /* Fonts — Fraunces (display, artisan serif) + Manrope (body) */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Manrope", "Segoe UI", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: var(--font-body);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Design Utilities */
+::selection {
+  background: #c2410c;
+  color: #fffaf0;
+}
+
+/* ── Focus rings ─────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #c2410c;
+  outline-offset: 2px;
+}
+
+/* ── Custom utilities ────────────────────────────────── */
 .ambient-shadow {
-  box-shadow: 0 30px 60px -15px rgba(26, 26, 26, 0.04);
+  box-shadow: 0 24px 60px -28px rgba(110, 60, 10, 0.22), 0 6px 18px -12px rgba(110, 60, 10, 0.16);
 }
 
 .transition-soft {
@@ -38,29 +73,80 @@ body {
 }
 
 .card-hover-effect {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.45s ease;
 }
 
 .card-hover-effect:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(26, 26, 26, 0.06);
+  transform: translateY(-6px);
+  box-shadow: 0 28px 48px -24px rgba(160, 80, 10, 0.3), 0 0 0 1px rgba(194, 65, 12, 0.18);
+  border-color: rgba(194, 65, 12, 0.28);
 }
 
-/* Custom Scrollbar for premium visual */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(194, 65, 12, 0.12);
 }
 
-::-webkit-scrollbar-track {
-  background: #f9f9f9;
+/* Brand gradient text — flame → terracotta → honey */
+.text-gradient-brand {
+  background: linear-gradient(100deg, #c2410c 10%, #e07b39 55%, #f4a300 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #dadada;
-  border-radius: 3px;
+.hairline-brand {
+  background: linear-gradient(90deg, transparent, rgba(194, 65, 12, 0.5), transparent);
+  height: 1px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #c5a059;
+/* Spice-print border strip — flame / paper / leaf */
+.spice-strip {
+  height: 10px;
+  background:
+    repeating-linear-gradient(90deg, #c2410c 0 18px, #ffffff 18px 26px, #2f7d32 26px 38px, #ffffff 38px 46px);
+  border-block: 1px solid #c2410c;
+}
+
+/* ── Motion ──────────────────────────────────────────── */
+@keyframes qdFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes qdZoomIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes qdSlideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes qdFadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+.fade-in { animation: qdFadeIn 0.8s ease both; }
+.fade-up { animation: qdFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.zoom-in-95 { animation: qdZoomIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.slide-in-from-top { animation: qdSlideDown 0.4s ease both; }
+.slide-in-from-top-2 { animation: qdSlideDown 0.3s ease both; }
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #faf5eb; }
+::-webkit-scrollbar-thumb { background: #e2b48a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #c2410c; }
+
+/* Motion system */
+@keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes popIn { 0% { opacity: 0; transform: scale(0.86); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(47,125,50,.4); } 70% { box-shadow: 0 0 0 9px rgba(47,125,50,0); } 100% { box-shadow: 0 0 0 0 rgba(47,125,50,0); } }
+
+.page-enter { animation: pageIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); will-change: opacity, transform; }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+.animate-marquee { animation: marquee 26s linear infinite; }
+.marquee-mask { mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+
+.step-pulse { animation: pulseRing 2s ease-out infinite; }
+.pop-in { animation: popIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter, .reveal, .animate-marquee, .pop-in { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
 }

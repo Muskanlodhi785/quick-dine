@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Calendar, Users } from "lucide-react";
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Calendar, Users, Armchair } from "lucide-react";
+import { todayISO } from "../../lib/format.ts";
 
 interface BookingWidgetProps {
     restaurant: any;
@@ -8,7 +9,9 @@ interface BookingWidgetProps {
     selectedGuests: string;
     setSelectedGuests: (guests: string) => void;
     selectedSlot: string;
-    setSelectedSlot: (slot: string) => void;
+    selectSlot: (slot: string) => void;
+    selectedTableId: string;
+    setSelectedTableId: (tableId: string) => void;
     slotsAvailability: any[];
     loadingSlots: boolean;
     isAuthenticated: boolean;
@@ -22,125 +25,175 @@ export default function BookingWidget({
     selectedGuests,
     setSelectedGuests,
     selectedSlot,
-    setSelectedSlot,
+    selectSlot,
+    selectedTableId,
+    setSelectedTableId,
     slotsAvailability,
     loadingSlots,
     isAuthenticated,
     handleReserveClick,
 }: BookingWidgetProps) {
-    console.log("Restaurant:", restaurant);
-console.log("Available Slots:", restaurant?.availableSlots);
-console.log("Is Array:", Array.isArray(restaurant));
-
-if (Array.isArray(restaurant)) {
-    console.log("First Restaurant:", restaurant[0]);
-}
     if (!restaurant) return null;
 
+    const selectedSlotInfo = slotsAvailability.find((s: any) => s.time === selectedSlot);
+
     return (
-        <div className="bg-white border border-outline-variant/20 p-6 rounded-md shadow-sm text-left">
-            <h3 className="font-display text-lg font-medium text-primary mb-4 pb-3 border-b border-outline-variant/10">Book a Table</h3>
+        <div className="bg-raised border border-outline-variant/20 p-6 rounded-md shadow-sm text-left">
+            <h3 className="font-display text-lg font-medium text-primary mb-4 pb-3 border-b border-outline-variant/10">
+                Book a Table
+            </h3>
 
             <div className="space-y-4">
-                {/* Guests count */}
+                {/* Party size */}
                 <div className="space-y-1">
-                    <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">PARTY SIZE</label>
+                    <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">PARTY SIZE</label>
                     <div className="relative">
-                        <Users className="absolute left-3 top-3 text-black/55" size={16} />
+                        <Users className="absolute left-3 top-3 text-ink/65" size={16} />
                         <select
                             value={selectedGuests}
-                            onChange={(e) => setSelectedGuests(e.target.value)}
+                            onChange={(e) => {
+                                setSelectedGuests(e.target.value);
+                                setSelectedTableId("");
+                            }}
                             className="w-full bg-surface-container-low/30 pl-9 pr-3 py-2.5 text-xs border border-outline-variant/40 focus:border-secondary focus:outline-none rounded-md cursor-pointer"
                         >
-                            <option value="1">1 Guest</option>
-                            <option value="2">2 Guests</option>
-                            <option value="4">4 Guests</option>
-                            <option value="6">6 Guests</option>
-                            <option value="8">8 Guests</option>
+                            {[1, 2, 3, 4, 5, 6, 8, 10].map((n) => (
+                                <option key={n} value={n}>
+                                    {n} {n === 1 ? "Guest" : "Guests"}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
 
                 {/* Date */}
                 <div className="space-y-1">
-                    <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">DATE</label>
+                    <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">DATE</label>
                     <div className="relative">
-                        <Calendar className="absolute left-3 top-3 text-black/55" size={16} />
+                        <Calendar className="absolute left-3 top-3 text-ink/65" size={16} />
                         <input
                             type="date"
                             value={selectedDate}
-                            onChange={(e) => setSelectedDate(e.target.value)}
-                            min={new Date().toISOString().split("T")[0]}
+                            onChange={(e) => {
+                                setSelectedDate(e.target.value);
+                                setSelectedTableId("");
+                            }}
+                            min={todayISO()}
                             className="w-full bg-surface-container-low/30 pl-9 pr-3 py-2.5 text-xs border border-outline-variant/40 focus:border-secondary focus:outline-none rounded-md cursor-pointer"
                         />
                     </div>
                 </div>
 
-                {/* Time Slots Grid */}
+                {/* Time slots */}
                 <div className="space-y-2 pt-2">
-                    <span className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">AVAILABLE TIMES</span>
-                    <div className="grid grid-cols-3 gap-2">
-                        {loadingSlots ? (
-                            <div className="col-span-3 py-4 text-center flex justify-center">
-                                <div className="w-5 h-5 border-2 border-outline-variant/30 border-t-secondary rounded-full animate-spin"></div>
-                            </div>
-                        ) : (
-                            (() => {
-                                const todayStr = new Date().toISOString().split("T")[0];
-                                const isToday = selectedDate === todayStr;
-                                const allSlots =
-                                    slotsAvailability.length > 0
-                                        ? slotsAvailability
-                                        : (restaurant.availableSlots || []).map((s: string) => ({
-                                              time: s,
-                                              availableSeats: 20,
-                                              isAvailable: true,
-                                          }));
-                                return allSlots.filter((slotInfo: any) => {
-                                    if (!isToday) return true;
+                    <span className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">AVAILABLE TIMES</span>
+                    {loadingSlots ? (
+                        <div className="py-4 text-center flex justify-center">
+                            <div className="w-5 h-5 border-2 border-outline-variant/30 border-t-secondary rounded-full animate-spin"></div>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-3 gap-2">
+                            {slotsAvailability.map((slotInfo: any) => {
+                                const isToday = selectedDate === todayISO();
+                                if (isToday) {
                                     const [slotHour, slotMinute] = slotInfo.time.split(":").map(Number);
                                     const now = new Date();
-                                    const currentHour = now.getHours();
-                                    const currentMinute = now.getMinutes();
-                                    return slotHour > currentHour || (slotHour === currentHour && slotMinute > currentMinute);
-                                });
-                            })().map((slotInfo: any) => {
-                                const slot = slotInfo.time;
-                                const isSelected = selectedSlot === slot;
-                                const isFull = !slotInfo.isAvailable || slotInfo.availableSeats < Number(selectedGuests);
+                                    const past =
+                                        slotHour < now.getHours() ||
+                                        (slotHour === now.getHours() && slotMinute <= now.getMinutes());
+                                    if (past) return null;
+                                }
+                                const isSelected = selectedSlot === slotInfo.time;
+                                const isFull = !slotInfo.available;
                                 return (
                                     <button
-                                        key={slot}
+                                        key={slotInfo.time}
                                         type="button"
                                         disabled={isFull}
-                                        onClick={() => setSelectedSlot(slot)}
+                                        onClick={() => selectSlot(slotInfo.time)}
                                         className={`py-2 px-1 text-center text-[10px] font-medium tracking-wider uppercase border transition-all rounded-sm ${
                                             isSelected
                                                 ? "bg-secondary border-secondary text-white shadow-sm cursor-pointer"
                                                 : isFull
-                                                  ? "bg-black/5 border-outline-variant/10 text-black/25 cursor-not-allowed opacity-50"
-                                                  : "border-outline-variant/40 text-black/55 hover:border-primary hover:text-primary cursor-pointer"
+                                                  ? "bg-black/5 border-outline-variant/10 text-ink/35 cursor-not-allowed opacity-50"
+                                                  : "border-outline-variant/40 text-ink/65 hover:border-primary hover:text-primary cursor-pointer"
                                         }`}
                                     >
-                                        {slot}
-                                        {isFull && <span className="block text-[8px] text-error uppercase mt-0.5">Full</span>}
+                                        {slotInfo.time}
+                                        {isFull ? (
+                                            <span className="block text-[8px] text-error uppercase mt-0.5">Full</span>
+                                        ) : (
+                                            <span className="block text-[8px] text-secondary uppercase mt-0.5">
+                                                {slotInfo.tables?.length ?? 0} table{(slotInfo.tables?.length ?? 0) === 1 ? "" : "s"}
+                                            </span>
+                                        )}
                                     </button>
                                 );
-                            })
-                        )}
-                    </div>
+                            })}
+                        </div>
+                    )}
                 </div>
 
-                {/* Action Button */}
+                {/* Table picker for the chosen slot */}
+                {selectedSlotInfo && (
+                    <div className="space-y-2 border border-outline-variant/20 rounded-md p-3 bg-surface-container-low/20">
+                        <span className="flex items-center gap-1.5 text-[10px] font-medium text-ink/65 tracking-wider uppercase">
+                            <Armchair size={13} /> CHOOSE A TABLE · {selectedSlotInfo.time}
+                        </span>
+                        {selectedSlotInfo.tables?.length ? (
+                            <div className="flex flex-wrap gap-3 pt-1">
+                                {selectedSlotInfo.tables.map((t: any) => {
+                                    const active = selectedTableId === t._id;
+                                    const seats = Array.from({ length: Math.min(t.capacity, 8) });
+                                    return (
+                                        <button
+                                            key={t._id}
+                                            type="button"
+                                            onClick={() => setSelectedTableId(t._id)}
+                                            aria-pressed={active}
+                                            className={`group flex flex-col items-center gap-1.5 min-w-[74px] px-3 py-2.5 border rounded-lg cursor-pointer transition-all duration-200 ${
+                                                active
+                                                    ? "bg-secondary/10 border-secondary text-secondary step-pulse"
+                                                    : "border-outline-variant/50 text-ink/60 hover:border-secondary/70 hover:text-secondary hover:-translate-y-0.5"
+                                            }`}
+                                        >
+                                            {/* mini top-view: seats around the table */}
+                                            <span className="flex flex-wrap justify-center gap-[3px] w-14">
+                                                {seats.map((_, i) => (
+                                                    <i
+                                                        key={i}
+                                                        className={`w-[5px] h-[5px] rounded-full transition-colors ${
+                                                            active ? "bg-secondary" : "bg-current opacity-60"
+                                                        }`}
+                                                    />
+                                                ))}
+                                            </span>
+                                            <span className="text-[10px] font-semibold tracking-wide">
+                                                {t.tableNumber}
+                                            </span>
+                                            <span className={`text-[9px] -mt-1 ${active ? "text-secondary/80" : "text-ink/40"}`}>
+                                                {t.capacity} {t.capacity === 1 ? "seat" : "seats"}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <p className="text-xs text-ink/55 italic">No free tables for this slot.</p>
+                        )}
+                    </div>
+                )}
+
+                {/* Action button */}
                 <button
                     onClick={handleReserveClick}
-                    className="w-full bg-primary hover:bg-secondary text-on-primary py-4 mt-6 text-xs font-medium tracking-widest uppercase transition-colors cursor-pointer"
+                    className="w-full bg-primary hover:bg-secondary text-on-primary py-4 mt-4 text-xs font-medium tracking-widest uppercase transition-colors cursor-pointer"
                 >
-                    {isAuthenticated ? "RESERVE NOW" : "LOGIN TO RESERVE"}
+                    {isAuthenticated ? "RESERVE THIS TABLE" : "LOGIN TO RESERVE"}
                 </button>
 
-                <p className="text-center text-[10px] text-black/55 mt-3 leading-relaxed">
-                    No reservation fee. Cancel for free up to 24 hours prior.
+                <p className="text-center text-[10px] text-ink/65 mt-3 leading-relaxed">
+                    Your request goes straight to the restaurant - each booking shows as pending until the house confirms your table (usually within minutes).
                 </p>
             </div>
         </div>

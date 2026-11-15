@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import Navbar from "../components/Navbar.tsx";
-import Footer from "../components/Footer.tsx";
 import RestaurantCard from "../components/RestaurantCard.tsx";
-import AuthModal from "../components/AuthModal.tsx";
 import { SlidersHorizontal, Search as SearchIcon, X, Check, MapPin, SearchXIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../lib/api.ts";
@@ -20,6 +17,7 @@ export default function Search() {
     // Filter states initialized from URL params
     const searchVal = searchParams.get("search") || "";
     const locationVal = searchParams.get("location") || "";
+    const partySizeVal = searchParams.get("partySize") || "";
     const cuisinesSelected = searchParams.getAll("cuisine");
     const pricesSelected = searchParams.getAll("priceRange");
     const sortVal = searchParams.get("sort") || "";
@@ -54,7 +52,7 @@ export default function Search() {
         fetchRestaurants();
     }, [searchParams]);
 
-    const handleTextSubmit = (e: React.MouseEvent) => {
+    const handleTextSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const nextParams = new URLSearchParams(searchParams);
         if (tempSearch) nextParams.set("search", tempSearch);
@@ -106,6 +104,16 @@ export default function Search() {
         setSearchParams(nextParams);
     };
 
+    const handlePartySizeChange = (size: string) => {
+        const nextParams = new URLSearchParams(searchParams);
+        if (size) {
+            nextParams.set("partySize", size);
+        } else {
+            nextParams.delete("partySize");
+        }
+        setSearchParams(nextParams);
+    };
+
     const clearAllFilters = () => {
         setSearchParams(new URLSearchParams());
         setTempSearch("");
@@ -113,19 +121,31 @@ export default function Search() {
     };
 
     const priceOptions = ["$", "$$", "$$$", "$$$$"];
-    const cuisineOptions = ["Italian", "French", "Japanese", "Steakhouse", "Vegetarian"];
+    const cuisineOptions = [
+        "BBQ & Balochi",
+        "Sindhi",
+        "Peshawari",
+        "Seafood",
+        "Continental",
+        "Tea & Sweets",
+    ];
+    const partySizeOptions = [
+        { label: "Any Size", value: "" },
+        { label: "2+ Guests", value: "2" },
+        { label: "4+ Guests", value: "4" },
+        { label: "6+ Guests", value: "6" },
+        { label: "8+ Guests", value: "8" },
+    ];
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-20">
-            <Navbar />
-            <AuthModal />
 
             {/* Sub-header / Search inputs */}
-            <div className="bg-white border-b border-outline-variant/10 py-4 z-10 sticky top-16 shadow-sm">
+            <div className="bg-raised border-b border-outline-variant/10 py-4 z-10 sticky top-16 shadow-sm">
                 <div className="max-w-7xl mx-auto px-6 md:px-10 flex flex-col md:flex-row gap-4 items-center justify-between">
                     <form onSubmit={handleTextSubmit} className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                         <div className="relative grow sm:grow-0 min-w-[200px]">
-                            <SearchIcon size={16} className="absolute left-2.5 top-2 text-black/55/70" />
+                            <SearchIcon size={16} className="absolute left-2.5 top-2 text-ink/45" />
                             <input
                                 type="text"
                                 placeholder="Search cuisine or name..."
@@ -135,7 +155,7 @@ export default function Search() {
                             />
                         </div>
                         <div className="relative grow sm:grow-0 min-w-[200px]">
-                            <MapPin size={16} className="absolute left-2.5 top-2 text-black/55/70" />
+                            <MapPin size={16} className="absolute left-2.5 top-2 text-ink/45" />
                             <input
                                 type="text"
                                 placeholder="Location..."
@@ -146,7 +166,7 @@ export default function Search() {
                         </div>
                         <button
                             type="submit"
-                            className="bg-primary hover:bg-secondary text-white text-[10px] font-medium tracking-wider uppercase px-5 py-2.5 rounded-md cursor-pointer transition-colors"
+                            className="bg-primary hover:bg-secondary text-on-secondary text-[10px] font-medium tracking-wider uppercase px-5 py-2.5 rounded-md cursor-pointer transition-colors"
                         >
                             UPDATE
                         </button>
@@ -155,7 +175,7 @@ export default function Search() {
                     <div className="flex gap-3 w-full md:w-auto justify-end">
                         <button
                             onClick={() => setShowMobileFilters(true)}
-                            className="md:hidden flex items-center gap-1.5 border border-outline-variant/50 hover:border-primary text-xs font-medium px-4 py-2 bg-white cursor-pointer transition-colors"
+                            className="md:hidden flex items-center gap-1.5 border border-outline-variant/50 hover:border-primary text-xs font-medium px-4 py-2 bg-raised cursor-pointer transition-colors"
                         >
                             <SlidersHorizontal size={14} />
                             <span>Filters</span>
@@ -178,6 +198,29 @@ export default function Search() {
                             </button>
                         </div>
 
+                        {/* Party Size Filter */}
+                        <div className="space-y-3">
+                            <h4 className="text-xs font-medium text-primary tracking-wider uppercase">Party Size</h4>
+                            <div className="flex flex-wrap gap-1.5">
+                                {partySizeOptions.map((opt) => {
+                                    const active = partySizeVal === opt.value;
+                                    return (
+                                        <button
+                                            key={opt.label}
+                                            onClick={() => handlePartySizeChange(opt.value)}
+                                            className={`text-[11px] px-2.5 py-1.5 rounded-full border transition-colors cursor-pointer ${
+                                                active
+                                                    ? "bg-secondary text-white border-secondary"
+                                                    : "border-outline-variant/60 text-ink/65 hover:border-secondary hover:text-secondary"
+                                            }`}
+                                        >
+                                            {opt.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
                         {/* Cuisine Filter */}
                         <div className="space-y-3">
                             <h4 className="text-xs font-medium text-primary tracking-wider uppercase">Cuisine</h4>
@@ -188,7 +231,7 @@ export default function Search() {
                                         <button
                                             key={c}
                                             onClick={() => handleCuisineToggle(c)}
-                                            className="w-full flex items-center justify-between text-left text-xs text-black/55 hover:text-primary transition-colors cursor-pointer py-1"
+                                            className="w-full flex items-center justify-between text-left text-xs text-ink/65 hover:text-primary transition-colors cursor-pointer py-1"
                                         >
                                             <span>{c}</span>
                                             <div
@@ -232,12 +275,12 @@ export default function Search() {
                 {/* Results Section */}
                 <div className="flex-1 flex flex-col">
                     <div className="flex justify-between items-center mb-8 pb-4 border-b border-outline-variant/10">
-                        <p className="text-sm text-black/55">
+                        <p className="text-sm text-ink/65">
                             {restaurants.length} {restaurants.length === 1 ? "Restaurant" : "Restaurants"} Available
                         </p>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-xs text-black/55 tracking-wider uppercase">SORT BY:</span>
+                            <span className="text-xs text-ink/65 tracking-wider uppercase">SORT BY:</span>
                             <select
                                 value={sortVal}
                                 onChange={(e) => handleSortChange(e.target.value)}
@@ -256,14 +299,14 @@ export default function Search() {
                         </div>
                     ) : restaurants.length === 0 ? (
                         <div className="grow flex flex-col items-center justify-center py-24 text-center">
-                            <SearchXIcon size={36} className="text-outline-variant mb-4" />
+                            <SearchXIcon size={36} className="text-ink/30 mb-4" />
                             <h3 className="font-display text-xl font-medium mb-2">No Restaurants Found</h3>
-                            <p className="text-xs text-black/50 max-w-sm mb-6">
+                            <p className="text-xs text-ink/60 max-w-sm mb-6">
                                 We couldn't find any premium establishments matching your search query. Try widening your filters.
                             </p>
                             <button
                                 onClick={clearAllFilters}
-                                className="bg-primary hover:bg-secondary text-white text-xs tracking-widest uppercase px-6 py-3 transition-colors cursor-pointer"
+                                className="bg-primary hover:bg-secondary text-on-secondary text-xs tracking-widest uppercase px-6 py-3 transition-colors cursor-pointer"
                             >
                                 CLEAR ALL FILTERS
                             </button>
@@ -284,13 +327,13 @@ export default function Search() {
             {/* Mobile Filters Drawer Modal */}
             {showMobileFilters && (
                 <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-sm md:hidden animate-in fade-in duration-200">
-                    <div className="w-80 bg-white h-full p-6 flex flex-col justify-between shadow-2xl animate-in slide-in-from-right duration-300">
+                    <div className="w-80 bg-raised h-full p-6 flex flex-col justify-between shadow-2xl animate-in slide-in-from-right duration-300">
                         <div>
                             <div className="flex justify-between items-center pb-4 border-b border-outline-variant/10">
                                 <h3 className="font-display text-lg font-medium text-primary">Filters</h3>
                                 <button
                                     onClick={() => setShowMobileFilters(false)}
-                                    className="p-1 text-black/55 hover:text-primary transition-colors cursor-pointer"
+                                    className="p-1 text-ink/65 hover:text-primary transition-colors cursor-pointer"
                                 >
                                     <X size={20} />
                                 </button>
@@ -306,7 +349,7 @@ export default function Search() {
                                             <button
                                                 key={c}
                                                 onClick={() => handleCuisineToggle(c)}
-                                                className="w-full flex items-center justify-between text-left text-xs text-black/55 hover:text-primary py-1 cursor-pointer"
+                                                className="w-full flex items-center justify-between text-left text-xs text-ink/65 hover:text-primary py-1 cursor-pointer"
                                             >
                                                 <span>{c}</span>
                                                 <div
@@ -316,6 +359,29 @@ export default function Search() {
                                                 >
                                                     {active && <Check size={10} />}
                                                 </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Mobile Party Size */}
+                            <div className="py-4 space-y-3 border-t border-outline-variant/10">
+                                <h4 className="text-xs font-medium text-primary tracking-wider uppercase">Party Size</h4>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {partySizeOptions.map((opt) => {
+                                        const active = partySizeVal === opt.value;
+                                        return (
+                                            <button
+                                                key={opt.label}
+                                                onClick={() => handlePartySizeChange(opt.value)}
+                                                className={`text-[11px] px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${
+                                                    active
+                                                        ? "bg-secondary text-white border-secondary"
+                                                        : "border-outline-variant/60 text-ink/65 hover:border-secondary hover:text-secondary"
+                                                }`}
+                                            >
+                                                {opt.label}
                                             </button>
                                         );
                                     })}
@@ -356,7 +422,7 @@ export default function Search() {
                             </button>
                             <button
                                 onClick={() => setShowMobileFilters(false)}
-                                className="flex-1 bg-primary text-white py-3 text-xs font-medium tracking-widest uppercase hover:bg-secondary cursor-pointer"
+                                className="flex-1 bg-primary text-on-primary py-3 text-xs font-medium tracking-widest uppercase hover:bg-secondary cursor-pointer"
                             >
                                 APPLY
                             </button>
@@ -365,7 +431,6 @@ export default function Search() {
                 </div>
             )}
 
-            <Footer />
         </div>
     );
 }

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
@@ -61,12 +61,12 @@ export const AppContextProvider = ({ children }: Props) => {
     const register = async (name: string, email: string, password: string, phone?: string, role?: string): Promise<boolean> => {
          try{
         setLoading(true);
-        const res = await api.post("/auth/register", {name, phone, role, email, password });
+        const res = await api.post("/auth/register", {name, phone: phone || undefined, role, email, password });
         const { token : userToken, ...userData} = res.data;
         localStorage.setItem("token", userToken);
         setToken(userToken);
         setUser(userData);
-        toast.success(`welcome to quickdine club`);
+        toast.success(`Welcome to Velvet Table!`);
         return true;
        }
       catch (error: any) {
@@ -97,8 +97,12 @@ export const AppContextProvider = ({ children }: Props) => {
                     const res = await api.get("/auth/me");
                    setUser(res.data)
                 }catch(error: any){
-                    toast.error(error?.response?.data?.message || "Login failed");
-                    logout();
+                    // Only a real 401 (invalid/expired token) should log the user out.
+                    // Network blips or 5xx keep the stored token so the next visit retries.
+                    if (error?.response?.status === 401) {
+                        localStorage.removeItem("token");
+                        setToken(null);
+                    }
                 }
             }
             setLoading(false);

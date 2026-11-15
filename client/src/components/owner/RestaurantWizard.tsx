@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { Utensils, Upload, Image } from "lucide-react";
 import toast from "react-hot-toast";
@@ -17,6 +17,9 @@ export default function RestaurantWizard({ setRestaurant }: RestaurantWizardProp
     const [location, setLocation] = useState("");
     const [address, setAddress] = useState("");
     const [chef, setChef] = useState("");
+    const [phone, setPhone] = useState("");
+    const [openingTime, setOpeningTime] = useState("12:00");
+    const [closingTime, setClosingTime] = useState("23:00");
     const [tags, setTags] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>("");
@@ -79,6 +82,9 @@ export default function RestaurantWizard({ setRestaurant }: RestaurantWizardProp
             formData.append("location", location);
             formData.append("address", address);
             formData.append("chef", chef);
+            formData.append("phone", phone);
+            formData.append("openingTime", openingTime);
+            formData.append("closingTime", closingTime);
             formData.append("tags", tags);
             formData.append("availableSlots", availableSlots.join(","));
             formData.append("totalSeats", totalSeats);
@@ -107,11 +113,11 @@ console.log(res.data)
     };
 
     return (
-        <div className="max-w-2xl mx-auto bg-white border border-outline-variant/20 p-8 md:p-10 shadow-sm rounded-md space-y-6">
+        <div className="max-w-2xl mx-auto bg-raised border border-outline-variant/20 p-8 md:p-10 shadow-sm rounded-md space-y-6">
             <div className="text-center space-y-2 pb-6 border-b border-outline-variant/10">
                 <Utensils size={36} className="mx-auto text-secondary" />
                 <h2 className="font-display text-xl font-medium text-primary">Setup Restaurant Profile</h2>
-                <p className="text-xs text-black/55">
+                <p className="text-xs text-ink/65">
                     Please create your restaurant details. Once submitted, it will be pending approval from the Admin.
                 </p>
             </div>
@@ -119,7 +125,7 @@ console.log(res.data)
             <form onSubmit={handleCreateRestaurant} className="space-y-5 text-left">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Restaurant Name</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Restaurant Name</label>
                         <input
                             type="text"
                             required
@@ -130,7 +136,7 @@ console.log(res.data)
                         />
                     </div>
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Cuisine Type</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Cuisine Type</label>
                         <input
                             type="text"
                             required
@@ -143,7 +149,7 @@ console.log(res.data)
                 </div>
 
                 <div className="space-y-1">
-                    <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Description</label>
+                    <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Description</label>
                     <textarea
                         required
                         rows={4}
@@ -156,20 +162,20 @@ console.log(res.data)
 
                 {/* Cover Image Upload */}
                 <div className="space-y-1">
-                    <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Restaurant Cover Image</label>
+                    <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Restaurant Cover Image</label>
                     <div className="flex flex-col md:flex-row gap-4 items-center bg-surface-container-low/30 border border-outline-variant/40 p-4 rounded-sm">
                         <div className="relative w-32 h-24 bg-surface border border-outline-variant/30 rounded-sm overflow-hidden shrink-0 flex items-center justify-center">
                             {imagePreview ? (
                                 <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                             ) : (
-                                <Image size={24} className="text-black/30" />
+                                <Image size={24} className="text-ink/40" />
                             )}
                         </div>
                         <div className="grow space-y-2 text-center md:text-left w-full">
-                            <p className="text-[11px] text-black/55 leading-relaxed">
+                            <p className="text-[11px] text-ink/65 leading-relaxed">
                                 Upload a high-resolution banner photo for your restaurant page. Supports JPG, PNG.
                             </p>
-                            <label className="inline-flex items-center gap-1.5 px-4 py-2 border border-outline-variant/40 hover:border-primary hover:text-primary transition-colors text-[10px] font-medium tracking-wider uppercase rounded-sm cursor-pointer bg-white">
+                            <label className="inline-flex items-center gap-1.5 px-4 py-2 border border-outline-variant/40 hover:border-primary hover:text-primary transition-colors text-[10px] font-medium tracking-wider uppercase rounded-sm cursor-pointer bg-raised">
                                 <Upload size={12} />
                                 {imageFile ? "Change Image" : "Upload Image"}
                                 <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
@@ -181,7 +187,38 @@ console.log(res.data)
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Price Range</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Contact Phone</label>
+                        <input
+                            type="text"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="e.g. +92 22 3812345"
+                            className="w-full bg-surface-container-low/30 border border-outline-variant/40 px-3 py-2.5 text-xs focus:border-secondary focus:outline-none rounded-sm"
+                        />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Opening Time</label>
+                        <input
+                            type="time"
+                            value={openingTime}
+                            onChange={(e) => setOpeningTime(e.target.value)}
+                            className="w-full bg-surface-container-low/30 border border-outline-variant/40 px-3 py-2.5 text-xs focus:border-secondary focus:outline-none rounded-sm"
+                        />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Closing Time</label>
+                        <input
+                            type="time"
+                            value={closingTime}
+                            onChange={(e) => setClosingTime(e.target.value)}
+                            className="w-full bg-surface-container-low/30 border border-outline-variant/40 px-3 py-2.5 text-xs focus:border-secondary focus:outline-none rounded-sm"
+                        />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Price Range</label>
                         <select
                             value={priceRange}
                             onChange={(e) => setPriceRange(e.target.value)}
@@ -194,7 +231,7 @@ console.log(res.data)
                         </select>
                     </div>
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Location (City)</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Location (City)</label>
                         <input
                             type="text"
                             required
@@ -205,7 +242,7 @@ console.log(res.data)
                         />
                     </div>
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">
                             Total Capacity (Seats)
                         </label>
                         <input
@@ -221,7 +258,7 @@ console.log(res.data)
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Address</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Address</label>
                         <input
                             type="text"
                             required
@@ -232,7 +269,7 @@ console.log(res.data)
                         />
                     </div>
                     <div className="space-y-1">
-                        <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Executive Chef</label>
+                        <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Executive Chef</label>
                         <input
                             type="text"
                             required
@@ -245,7 +282,7 @@ console.log(res.data)
                 </div>
 
                 <div className="space-y-1">
-                    <label className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Tags (comma separated)</label>
+                    <label className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Tags (comma separated)</label>
                     <input
                         type="text"
                         value={tags}
@@ -256,7 +293,7 @@ console.log(res.data)
                 </div>
 
                 <div className="space-y-2">
-                    <span className="block text-[10px] font-medium text-black/55 tracking-wider uppercase">Available Slots</span>
+                    <span className="block text-[10px] font-medium text-ink/65 tracking-wider uppercase">Available Slots</span>
                     <div className="flex flex-wrap gap-2">
                         {defaultSlots.map((slot) => {
                             const isSelected = availableSlots.includes(slot);
@@ -268,7 +305,7 @@ console.log(res.data)
                                     className={`py-1.5 px-3 text-[10px] border transition-colors cursor-pointer rounded-sm ${
                                         isSelected
                                             ? "bg-primary border-primary text-white"
-                                            : "border-outline-variant/40 text-black/55 hover:border-primary"
+                                            : "border-outline-variant/40 text-ink/65 hover:border-primary"
                                     }`}
                                 >
                                     {slot}
@@ -281,7 +318,7 @@ console.log(res.data)
                 <button
                     type="submit"
                     disabled={formLoading}
-                    className="w-full bg-primary hover:bg-secondary text-white text-xs font-medium tracking-widest uppercase py-3.5 transition-colors cursor-pointer"
+                    className="w-full bg-primary hover:bg-secondary text-on-secondary text-xs font-medium tracking-widest uppercase py-3.5 transition-colors cursor-pointer"
                 >
                     {formLoading ? "SUBMITTING..." : "REGISTER RESTAURANT"}
                 </button>

@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar.tsx";
-import Footer from "../components/Footer.tsx";
-import AuthModal from "../components/AuthModal.tsx";
 import Hero from "../components/home/Hero.tsx";
 import CuisineBrowse from "../components/home/CuisineBrowse.tsx";
 import TrendingRow from "../components/home/TrendingRow.tsx";
 import MembershipSection from "../components/home/MembershipSection.tsx";
 import NewsletterCTA from "../components/home/NewsletterCTA.tsx";
+import MarqueeStrip from "../components/home/MarqueeStrip.tsx";
+import AiPicks from "../components/home/AiPicks.tsx";
+import Reveal from "../components/Reveal.tsx";
 import toast from "react-hot-toast";
 import api from "../lib/api.ts";
 
@@ -38,16 +38,25 @@ catch (error: any) {
 
     return (
         <div className="min-h-screen bg-surface flex flex-col pt-0">
-            <Navbar />
-            <AuthModal />
+
             <main className="flex-1">
                 <Hero />
-                <CuisineBrowse />
-                <TrendingRow trending={trending} loading={loading} />
-                <MembershipSection />
+                <MarqueeStrip />
+                <Reveal>
+                    <CuisineBrowse />
+                </Reveal>
+                <Reveal delay={80}>
+                    <TrendingRow trending={trending} loading={loading} />
+                </Reveal>
+                <Reveal delay={100}>
+                    <AiPicks />
+                </Reveal>
+                <Reveal delay={120}>
+                    <MembershipSection />
+                </Reveal>
                 <NewsletterCTA />
             </main>
-            <Footer />
+
         </div>
     );
 }
